@@ -70,7 +70,7 @@ func runAppHook(env *localenv.LocalEnvironment, req appservice.HookRunRequest) (
 }
 
 // statusApp prints application status in json format
-func statusApp(env *localenv.LocalEnvironment, appPackage loc.Locator, portalURL string) error {
+func statusApp(env *localenv.LocalEnvironment, appPackage loc.Locator) error {
 	registryURL, err := localAppEnviron()
 	if err != nil {
 		return trace.Wrap(err)

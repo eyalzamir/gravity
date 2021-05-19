@@ -150,7 +150,7 @@ func (*VendorSuite) TestGeneratesProperPackageNames(c *C) {
 		{
 			image: "planet-gpu:1.0.0",
 			validator: func(loc loc.Locator, generated map[string]struct{}) bool {
-				return "planet-gpu" == loc.Name
+				return loc.Name == "planet-gpu"
 			},
 			comment: "package name equals image name",
 		},
@@ -174,21 +174,21 @@ func (*VendorSuite) TestGeneratesProperPackageNames(c *C) {
 		{
 			image: "repo-a/image:2.0.0",
 			validator: func(loc loc.Locator, generated map[string]struct{}) bool {
-				return "repo-a-image" == loc.Name
+				return loc.Name == "repo-a-image"
 			},
 			comment: "can handle image names with repository",
 		},
 		{
 			image: "repo-b/image:2.0.0",
 			validator: func(loc loc.Locator, generated map[string]struct{}) bool {
-				return "repo-b-image" == loc.Name
+				return loc.Name == "repo-b-image"
 			},
-			comment: "gets a unique package name with a respository",
+			comment: "gets a unique package name with a repository",
 		},
 		{
 			image: "repo.io/subrepo/image:2.0.0",
 			validator: func(loc loc.Locator, generated map[string]struct{}) bool {
-				return "repo.io-subrepo-image" == loc.Name
+				return loc.Name == "repo.io-subrepo-image"
 			},
 			comment: "can handle images with nested paths",
 		},

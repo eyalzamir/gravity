@@ -55,7 +55,7 @@ import (
 // VendorerConfig is configuration for vendorer
 type VendorerConfig struct {
 	// DockerClient is the docker client to use to manage images
-	DockerClient docker.DockerInterface
+	DockerClient docker.Interface
 	// ImageService is the docker registry service
 	docker.ImageService
 	// RegistryURL is the URL of the active docker registry to use
@@ -66,7 +66,7 @@ type VendorerConfig struct {
 
 // NewVendorer creates a new vendorer instance.
 func NewVendorer(config VendorerConfig) (*vendorer, error) {
-	dockerPuller := docker.NewDockerPuller(config.DockerClient)
+	dockerPuller := docker.NewPuller(config.DockerClient)
 	v := &vendorer{
 		dockerClient: config.DockerClient,
 		imageService: config.ImageService,
@@ -128,9 +128,9 @@ type VendorRequest struct {
 // vendorer is a helper struct that encapsulates all services needed to vendor/rewrite images in
 // the application being imported.
 type vendorer struct {
-	dockerClient docker.DockerInterface
+	dockerClient docker.Interface
 	imageService docker.ImageService
-	dockerPuller docker.DockerPuller
+	dockerPuller docker.Puller
 	registryURL  string
 	packages     pack.PackageService
 }
@@ -418,10 +418,10 @@ func (v *vendorer) translateRuntimeImages(m *schema.Manifest) error {
 				defaults.SystemAccountOrg, constants.PlanetPackage, tag)
 		}
 		req := docker.TranslateImageRequest{
-			Image:           m.SystemOptions.BaseImage,
-			Package:         *runtimePackage,
-			DockerInterface: v.dockerClient,
-			PackageService:  v.packages,
+			Image:          m.SystemOptions.BaseImage,
+			Package:        *runtimePackage,
+			Interface:      v.dockerClient,
+			PackageService: v.packages,
 		}
 		if err := docker.TranslateRuntimeImage(req); err != nil {
 			return trace.Wrap(err)
@@ -446,10 +446,10 @@ func (v *vendorer) translateRuntimeImages(m *schema.Manifest) error {
 			}
 			runtimePackage = *newPackage
 			req := docker.TranslateImageRequest{
-				Image:           profile.SystemOptions.BaseImage,
-				Package:         runtimePackage,
-				DockerInterface: v.dockerClient,
-				PackageService:  v.packages,
+				Image:          profile.SystemOptions.BaseImage,
+				Package:        runtimePackage,
+				Interface:      v.dockerClient,
+				PackageService: v.packages,
 			}
 			if err := docker.TranslateRuntimeImage(req); err != nil {
 				return trace.Wrap(err)
@@ -817,5 +817,5 @@ func resourcesFromPath(root string, req VendorRequest) (result resources.Resourc
 	if err != nil {
 		return nil, nil, trace.Wrap(err)
 	}
-	return
+	return result, chartResources, nil
 }

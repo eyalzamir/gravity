@@ -61,7 +61,7 @@ type Config struct {
 	// The client is used to manage container images obtained from the application
 	// manifest.  It is used to check image presence, pull images from a remote
 	// registry and start temporary registry container.
-	DockerClient docker.DockerInterface
+	DockerClient docker.Interface
 	// ImageService defines the interface to the private docker registry running inside
 	// the cluster.
 	// It is used to sync local container images during installation
@@ -417,7 +417,7 @@ func (r *applications) ListApps(req appservice.ListAppsRequest) (apps []appservi
 		if req.Pattern != "" && !strings.Contains(item.Locator.Name, req.Pattern) {
 			continue
 		}
-		app, err := toApp(&item, r)
+		app, err := toApp(item, r)
 		if err != nil {
 			// just skip the app if we failed to resolve its manifest to prevent OpsCenter from
 			// breaking when deploying backward-incompatible manifest changes
@@ -533,7 +533,7 @@ func (r *applications) GetApp(locator loc.Locator) (*appservice.Application, err
 		return nil, trace.Wrap(err)
 	}
 
-	return toApp(envelope, r)
+	return toApp(*envelope, r)
 }
 
 func (r *applications) UpsertApp(locator loc.Locator, reader io.Reader, labels map[string]string) (*appservice.Application, error) {
@@ -755,7 +755,7 @@ func (r *applications) GetImportedApplication(op storage.AppOperation) (*appserv
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
-	app, err := toApp(pkg, r)
+	app, err := toApp(*pkg, r)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}

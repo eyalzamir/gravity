@@ -259,7 +259,7 @@ func (c *Client) ListApps(req app.ListAppsRequest) (apps []app.Application, err 
 	out, err := c.Get(endpoint, url.Values{
 		"type":           []string{string(req.Type)},
 		"exclude_hidden": []string{strconv.FormatBool(req.ExcludeHidden)},
-		"pattern":        []string{string(req.Pattern)},
+		"pattern":        []string{req.Pattern},
 	})
 	if err != nil {
 		return nil, trace.Wrap(err)

@@ -25,7 +25,7 @@ import (
 )
 
 // DockerInterfaces defines an interface to docker
-type DockerInterface interface {
+type Interface interface {
 	// InspectImage retrieves metadata for the specified image
 	InspectImage(name string) (*dockerapi.Image, error)
 	// TagImage tags the image specified with name
@@ -71,8 +71,8 @@ type Image struct {
 	Tags []string `json:"tags" yaml:"tags"`
 }
 
-// DockerPuller defines an interface to pull images
-type DockerPuller interface {
+// Puller defines an interface to pull images
+type Puller interface {
 	// Pull pulls the specified image
 	Pull(image string) error
 	// IsImagePresent checks if the specified image is available locally

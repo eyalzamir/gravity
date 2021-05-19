@@ -59,6 +59,8 @@ func SupportsInstanceType(region, instanceType string) bool {
 		if strings.HasPrefix(instanceType, "c3.") || strings.HasPrefix(instanceType, "m3.") {
 			return false
 		}
+	default:
+		// No handling
 	}
 	return true
 }

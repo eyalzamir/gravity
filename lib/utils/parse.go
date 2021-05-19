@@ -292,8 +292,8 @@ func ParseDDOutput(output string) (uint64, error) {
 type User struct {
 	Name  string
 	Pass  string
-	Uid   int
-	Gid   int
+	Uid   int //nolint:stylecheck
+	Gid   int //nolint:stylecheck
 	Gecos string
 	Home  string
 	Shell string

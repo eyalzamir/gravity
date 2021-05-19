@@ -180,12 +180,13 @@ func (r *ResourceFiles) RewriteManifest(rewrites ...ManifestRewriteFunc) error {
 
 // skipRewrite skips rewrite of the provisioning hooks,
 // these ones will be pulled from the internet
-func skipRewrite(hook *schema.Hook, job *batchv1.Job) bool {
+func skipRewrite(hook *schema.Hook) bool {
 	switch hook.Type {
 	case schema.HookClusterProvision, schema.HookClusterDeprovision, schema.HookNodesProvision, schema.HookNodesDeprovision:
 		return true
+	default:
+		return false
 	}
-	return false
 }
 
 // RewriteImages rewrites container image references in all resource files part
@@ -213,7 +214,7 @@ func (r *ResourceFiles) RewriteImages(rewriteFunc func(string) string) error {
 		if job == nil {
 			return nil
 		}
-		if skipRewrite(hook, job) {
+		if skipRewrite(hook) {
 			return nil
 		}
 		rewrite(&job.Spec.Template.Spec)
@@ -343,7 +344,7 @@ func extractImages(objects []runtime.Object) (*ExtractedImages, error) {
 					if job == nil {
 						continue
 					}
-					if skipRewrite(hook, job) {
+					if skipRewrite(hook) {
 						continue
 					}
 					containers = append(containers, job.Spec.Template.Spec.Containers...)

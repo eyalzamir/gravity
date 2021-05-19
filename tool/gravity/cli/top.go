@@ -238,7 +238,7 @@ func getChart(p chartParams) *termui.LineChart {
 	return chart
 }
 
-// Dimensions contains dimentions (height/width) for terminal widgets.
+// Dimensions contains dimensions (height/width) for terminal widgets.
 type Dimensions struct {
 	TitleH, TitleW int
 	GaugeH, GaugeW int

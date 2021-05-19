@@ -46,7 +46,6 @@ import (
 )
 
 func (r *applications) getApplicationInstaller(
-	req appservice.InstallerRequest,
 	app *appservice.Application,
 	apps *applications,
 ) ([]*archive.Item, error) {
@@ -168,7 +167,7 @@ func (r *applications) GetAppInstaller(req appservice.InstallerRequest) (install
 	case schema.KindBundle, schema.KindCluster:
 		items, err = r.getClusterInstaller(req, app, localApps)
 	case schema.KindApplication:
-		items, err = r.getApplicationInstaller(req, app, localApps)
+		items, err = r.getApplicationInstaller(app, localApps)
 	default:
 		return nil, trace.BadParameter("unsupported kind %q",
 			app.Manifest.Kind)
@@ -179,7 +178,7 @@ func (r *applications) GetAppInstaller(req appservice.InstallerRequest) (install
 
 	reader, writer := io.Pipe()
 	go func() {
-		uploadScript, err := renderUploadScript(*app)
+		uploadScript, err := renderUploadScript()
 		if err != nil {
 			r.Warnf("Failed to render upload script: %v.", trace.DebugReport(err))
 			if errClose := writer.CloseWithError(err); errClose != nil {
@@ -214,7 +213,7 @@ func (r *applications) GetAppInstaller(req appservice.InstallerRequest) (install
 	}, nil
 }
 
-func renderUploadScript(app appservice.Application) (uploadScript []byte, err error) {
+func renderUploadScript() (uploadScript []byte, err error) {
 	var buf bytes.Buffer
 	err = uploadScriptTemplate.Execute(&buf, &struct{}{})
 	if err != nil {

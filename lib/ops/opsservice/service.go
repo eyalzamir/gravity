@@ -1074,7 +1074,7 @@ func (o *Operator) CreateClusterGarbageCollectOperation(ctx context.Context, r o
 		return nil, trace.Wrap(err)
 	}
 
-	key, err := cluster.createGarbageCollectOperation(ctx, r)
+	key, err := cluster.createGarbageCollectOperation(ctx)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}

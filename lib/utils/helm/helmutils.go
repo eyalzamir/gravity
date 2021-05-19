@@ -33,15 +33,15 @@ import (
 // This function was copied from Helm with slight modifications:
 //
 // https://github.com/helm/helm/blob/v2.12.0/cmd/helm/install.go#L363
-func Vals(valueFiles valueFiles, values []string, stringValues []string, fileValues []string, CertFile, KeyFile, CAFile string) ([]byte, error) {
-	base, err := merge(valueFiles, values, stringValues, fileValues, CertFile, KeyFile, CAFile)
+func Vals(valueFiles valueFiles, values []string, stringValues []string, fileValues []string) ([]byte, error) {
+	base, err := merge(valueFiles, values, stringValues, fileValues)
 	if err != nil {
 		return []byte{}, trace.Wrap(err)
 	}
 	return yaml.Marshal(base)
 }
 
-func merge(valueFiles valueFiles, values []string, stringValues []string, fileValues []string, CertFile, KeyFile, CAFile string) (map[string]interface{}, error) {
+func merge(valueFiles valueFiles, values []string, stringValues []string, fileValues []string) (map[string]interface{}, error) {
 	base := map[string]interface{}{}
 
 	// User specified a values files via -f/--values

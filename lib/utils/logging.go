@@ -30,7 +30,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 )
 
-// InitLogging initalizes logging to log both to syslog and to a file
+// InitLogging initializes logging to log both to syslog and to a file
 func InitLogging(level log.Level, logFile string) {
 	log.StandardLogger().Hooks.Add(&Hook{
 		path: logFile,

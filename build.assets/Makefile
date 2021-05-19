@@ -7,7 +7,9 @@
 #
 
 OPS_URL ?=
-LOCALDIR := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
+MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+LOCALDIR := $(realpath $(patsubst %/,%,$(dir $(MKFILE_PATH))))
+TOP := $(abspath $(LOCALDIR)/..)
 LOCAL_BUILDDIR ?= /gopath/src/github.com/gravitational/gravity/build
 # Path to the local gravity build assets directory used inside the container
 LOCAL_GRAVITY_BUILDDIR ?= /gopath/src/github.com/gravitational/gravity/build/$(GRAVITY_VERSION)
@@ -99,6 +101,16 @@ BASH ?= /bin/bash
 
 # packages to test
 TEST_PACKAGES ?= $(GRAVITY_PKG_PATH)/lib/... $(GRAVITY_PKG_PATH)/tool/...
+
+# Version of the version tool
+VERSION_TAG := 0.0.2
+GOLANGCI_LINT_VER := v1.40.1
+
+# grpc
+PROTOC_VER ?= 3.10.0
+PROTOC_PLATFORM := linux-x86_64
+GOGO_PROTO_TAG ?= v1.3.0
+GRPC_GATEWAY_TAG ?= v1.11.3
 
 GRPC_PROTOS = \
 	$(TOP)/lib/install/proto/installer.proto \
@@ -236,6 +248,25 @@ build-in-container: buildbox
 		   $(GOCACHE_DOCKER_OPTIONS) \
 		   $(BBOX) \
 		   dumb-init make -C $(SRCDIR)/build.assets -j $(TARGETS)
+
+#
+# golint gravity binaries in a buildbox container
+#
+.PHONY: golint
+golint: buildbox
+	docker run --rm=true $(NOROOT) \
+		   -v $(TOP):$(SRCDIR) \
+		   -e "LOCAL_BUILDDIR=$(LOCAL_BUILDDIR)" \
+		   -e "LOCAL_GRAVITY_BUILDDIR=$(LOCAL_GRAVITY_BUILDDIR)" \
+		   -e "GRAVITY_PKG_PATH=$(GRAVITY_PKG_PATH)" \
+		   -e "GRAVITY_VERSION=$(GRAVITY_VERSION)" \
+		   -e "GRAVITY_TAG=$(GRAVITY_TAG)" \
+		   -e 'GRAVITY_LINKFLAGS=$(GRAVITY_LINKFLAGS)' \
+		   -e "GRAVITY_BUILDFLAGS=$(GRAVITY_BUILDFLAGS)" \
+		   -e "GRAVITY_BUILDTAGS=$(GRAVITY_BUILDTAGS)" \
+		   $(GOCACHE_DOCKER_OPTIONS) \
+		   $(BBOX) \
+		   dumb-init make -C $(SRCDIR) golint
 
 #
 # build gravity binaries on host
@@ -698,6 +729,7 @@ buildbox:
 		--build-arg GOGO_PROTO_TAG=$(GOGO_PROTO_TAG) \
 		--build-arg GRPC_GATEWAY_TAG=$(GRPC_GATEWAY_TAG) \
 		--build-arg VERSION_TAG=$(VERSION_TAG) \
+		--build-arg GOLANGCI_LINT_VER=$(GOLANGCI_LINT_VER) \
 		--build-arg UID=$(shell id -u) \
 		--build-arg GID=$(shell id -g) \
 		$(DOCKER_ARGS) --tag $(BBOX) .

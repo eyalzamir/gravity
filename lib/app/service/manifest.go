@@ -126,14 +126,14 @@ func renderItemFromTarball(tarball *archive.TarAppender) archive.TarGlobHandler 
 }
 
 // toApp translates an application representation from storage format
-func toApp(pkg *pack.PackageEnvelope, apps *applications) (*app.Application, error) {
+func toApp(pkg pack.PackageEnvelope, apps *applications) (*app.Application, error) {
 	manifest, err := apps.resolveManifest(pkg.Manifest)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
 	return &app.Application{
 		Package:         pkg.Locator,
-		PackageEnvelope: *pkg,
+		PackageEnvelope: pkg,
 		Manifest:        *manifest,
 	}, nil
 }

@@ -239,13 +239,16 @@ func (o *Operator) RotatePlanetConfig(req ops.RotatePlanetConfigRequest) (*ops.R
 		return nil, trace.Wrap(err)
 	}
 
-	var master *storage.Server
-	for _, server := range cluster.servers() {
-		if server.IsMaster() {
-			master = &server
-			break
+	getMaster := func() *storage.Server {
+		for _, server := range cluster.servers() {
+			if server.IsMaster() {
+				return &server
+			}
 		}
+		return nil
 	}
+
+	master := getMaster()
 	if master == nil {
 		return nil, trace.NotFound("couldn't find master server: %v", req)
 	}
@@ -320,7 +323,7 @@ func (o *Operator) ConfigureNode(req ops.ConfigureNodeRequest) error {
 		return trace.Wrap(err)
 	}
 
-	commands, err := remoteDirectories(*operation, node, updateApp.Manifest,
+	commands, err := remoteDirectories(node, updateApp.Manifest,
 		cluster.ServiceUser.UID, cluster.ServiceUser.GID)
 	if err != nil {
 		return trace.Wrap(err)

@@ -383,6 +383,7 @@ func (s *OperationGroupSuite) setOperationState(c *check.C, key ops.SiteOperatio
 	c.Assert(err, check.IsNil)
 }
 
+//nolint:unparam // tests will be rewritten to use testify
 func (s *OperationGroupSuite) createUpgradeOperation(c *check.C, created time.Time, force bool) (*ops.SiteOperationKey, error) {
 	group := s.operator.getOperationGroup(s.cluster.Key())
 	key, err := group.createSiteOperationWithOptions(ops.SiteOperation{
