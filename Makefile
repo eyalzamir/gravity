@@ -25,23 +25,10 @@ K8S_VER := 1.21.0
 # 1.13.5 -> 11305, 1.13.12 -> 11312, 2.0.0 -> 20000 and so on
 K8S_VER_SUFFIX := $(shell printf "%d%02d%02d" $(shell echo $(K8S_VER) | sed "s/\./ /g"))
 GOLFLAGS ?= -w -s
-GOLINT ?= golangci-lint
-# TODO(dima): this is a WIP configuration which will be finalized
-# once all lint warnings have been fixed
-GOLINT_PACKAGES ?= ./lib/app/... \
-	./lib/app/... \
-	./lib/cloudprovider/... \
-	./lib/constants/... \
-	./lib/docker/... \
-	./lib/httplib/... \
-	./lib/localenv/... \
-	./lib/ops/opsservice/... \
-	./lib/system/... \
-	./lib/utils/... \
-	./lib/webapi/... \
-	./tool/gravity/...
 
 ETCD_VER := v2.3.7
+# Version of the version tool
+VERSION_TAG := 0.0.2
 
 FIO_VER ?= 3.15
 FIO_TAG := fio-$(FIO_VER)
@@ -217,6 +204,12 @@ USER := $(shell echo $${SUDO_USER:-$$USER})
 TEST_ETCD ?= false
 TEST_K8S ?= false
 
+# grpc
+PROTOC_VER ?= 3.10.0
+PROTOC_PLATFORM := linux-x86_64
+GOGO_PROTO_TAG ?= v1.3.0
+GRPC_GATEWAY_TAG ?= v1.11.3
+
 BINARIES ?= tele gravity
 
 export
@@ -250,6 +243,8 @@ production:
 #
 .PHONY: grpc
 grpc:
+	PROTOC_VER=$(PROTOC_VER) PROTOC_PLATFORM=$(PROTOC_PLATFORM) \
+	GOGO_PROTO_TAG=$(GOGO_PROTO_TAG) GRPC_GATEWAY_TAG=$(GRPC_GATEWAY_TAG) VERSION_TAG=$(VERSION_TAG) \
 	$(MAKE) -C build.assets grpc
 
 #
@@ -734,24 +729,5 @@ clean-codegen:
 .PHONY: selinux
 selinux:
 	$(MAKE) -C build.assets	selinux
-
-.PHONY: golint
-golint: golangci-verify
-	$(GOLINT) run -c .golangci.yml \
-		$(GOLINT_PACKAGES)
-
-.PHONY: golangci-verify
-golangci-verify: GOLANGCI_INSTALLED:=$(shell command -v golangci-lint 2>/dev/null)
-golangci-verify: GOLANGCI_INSTALLED_VER:=$(shell golangci-lint version --format=short 2>&1)
-golangci-verify: GOLANGCI_INSTALLED_VER_MINOR:=$(shell golangci-lint version --format=short 2>&1 | cut -f2 -d.)
-golangci-verify:
-ifeq ($(GOLANGCI_INSTALLED),"")
-$(error This step requires golangci-lint)
-endif
-	@if [ "$(GOLANGCI_INSTALLED_VER_MINOR)" -lt "39" ]; then \
-		echo "Installed golangci-lint version: $(GOLANGCI_INSTALLED_VER)"; \
-		echo "This step requires golangci-lint version 1.39.0 or newer"; \
-		exit 1; \
-	fi;
 
 include build.assets/etcd.mk
