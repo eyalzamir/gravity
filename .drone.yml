@@ -26,6 +26,14 @@ steps:
     volumes:
       - name: dockersock
         path: /var/run
+  - name: lint
+    image: docker:git
+    commands:
+      - apk add --no-cache make bash libc6-compat
+      - make -C build.assets golint
+    volumes:
+      - name: dockersock
+        path: /var/run
   - name: build
     image: docker:git
     environment:
