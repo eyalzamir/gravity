@@ -45,7 +45,7 @@ import (
 // 1. Planet will ship with each version of etcd we support upgrades from
 // 2. Planet when started, will determine the version of etcd to use (planet etcd init)
 //      This is done by assuming the oldest possible etcd release
-//      During an upgrade, the verison of etcd to use is written to the etcd data directory
+//      During an upgrade, the version of etcd to use is written to the etcd data directory
 // 3. Backup all etcd data via API
 // 4. Shutdown etcd (all servers) // API outage starts
 // 6. Start the cluster masters, but with clients bound to an alternative address (127.0.0.2) and using new data dir

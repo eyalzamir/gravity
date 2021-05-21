@@ -987,7 +987,7 @@ func (i *IdentityACL) CreateResetToken(advertiseURL string, email string, ttl ti
 }
 
 // ResetUserWithToken sets user password based on user secret token
-// and logs in user after that in case of successfull operation
+// and logs in user after that in case of successful operation
 func (i *IdentityACL) ResetUserWithToken(req UserTokenCompleteRequest) (teleservices.WebSession, error) {
 	// token is its own auth, so no extra auth is necessary
 	return i.identity.ResetUserWithToken(req)

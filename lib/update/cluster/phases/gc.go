@@ -42,7 +42,7 @@ func NewGarbageCollectPhase(p fsm.ExecutorParams, remote fsm.Remote, logger log.
 // Clean up tasks include:
 //  * trimming the container journal
 func (r *phaseGC) Execute(ctx context.Context) error {
-	if err := trimJournalFiles(r.remote, r.FieldLogger); err != nil {
+	if err := trimJournalFiles(r.FieldLogger); err != nil {
 		r.Warnf("Failed to clean up obsolete journal files: %v.", err)
 	}
 	return nil
@@ -63,7 +63,7 @@ func (*phaseGC) PostCheck(context.Context) error {
 	return nil
 }
 
-func trimJournalFiles(remote fsm.Remote, logger log.FieldLogger) error {
+func trimJournalFiles(logger log.FieldLogger) error {
 	logger.Info("Garbage collect obsolete journal files.")
 	commands := [][]string{
 		// Force flush journal buffers and rotate files

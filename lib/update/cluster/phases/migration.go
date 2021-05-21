@@ -31,7 +31,6 @@ import (
 	"github.com/gravitational/gravity/lib/storage/keyval"
 	"github.com/gravitational/gravity/lib/users"
 
-	"github.com/gravitational/teleport/lib/services"
 	teleservices "github.com/gravitational/teleport/lib/services"
 	"github.com/gravitational/trace"
 	log "github.com/sirupsen/logrus"
@@ -80,14 +79,14 @@ func (p *phaseMigrateLinks) Execute(context.Context) error {
 	remoteLink := remoteLinks[0]
 	// find the corresponding update link
 	var updateLink *storage.OpsCenterLink
-	for _, link := range updateLinks {
+	for i, link := range updateLinks {
 		if link.Hostname == remoteLink.Hostname {
-			updateLink = &link
+			updateLink = &updateLinks[i]
 			break
 		}
 	}
 	// update link *should* be present but in case of some broken configuration
-	// let's tolerate its absense
+	// let's tolerate its absence
 	if updateLink == nil {
 		p.Warnf("Could not find update link for remote support link %v: %v %v.",
 			remoteLink, remoteLinks, updateLinks)
@@ -266,7 +265,7 @@ func (p *phaseMigrateRoles) Rollback(context.Context) error {
 
 // NeedMigrateRoles returns true if the provided cluster roles need to be
 // migrated to a new format
-func NeedMigrateRoles(roles []services.Role) bool {
+func NeedMigrateRoles(roles []teleservices.Role) bool {
 	for _, role := range roles {
 		if needMigrateRole(role) {
 			return true
@@ -393,10 +392,10 @@ func getBackupBackend(operationID string) (storage.Backend, error) {
 
 // needMigrateRole returns true if the provided cluster role needs to be
 // migrated to a new format
-func needMigrateRole(role services.Role) bool {
+func needMigrateRole(role teleservices.Role) bool {
 	// if the role has "assignKubernetesGroups" action, it needs to
 	// be migrated to the new KubeGroups property
-	for _, rule := range append(role.GetRules(services.Allow), role.GetRules(services.Deny)...) {
+	for _, rule := range append(role.GetRules(teleservices.Allow), role.GetRules(teleservices.Deny)...) {
 		for _, action := range rule.Actions {
 			if strings.HasPrefix(action, constants.AssignKubernetesGroupsFnName) {
 				return true

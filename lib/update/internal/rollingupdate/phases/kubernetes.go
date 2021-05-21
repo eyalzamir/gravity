@@ -21,7 +21,6 @@ import (
 	"time"
 
 	"github.com/gravitational/gravity/lib/defaults"
-	"github.com/gravitational/gravity/lib/fsm"
 	libfsm "github.com/gravitational/gravity/lib/fsm"
 	"github.com/gravitational/gravity/lib/kubernetes"
 	"github.com/gravitational/gravity/lib/storage"
@@ -48,9 +47,9 @@ func NewTaint(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger lo
 }
 
 // Execute adds a taint on the specified node.
-func (r *tainter) Execute(ctx context.Context) error {
-	r.Infof("Taint %v.", r.Server)
-	err := taint(ctx, r.Client.CoreV1().Nodes(), r.Server.KubeNodeID(), addTaint(true))
+func (p *tainter) Execute(ctx context.Context) error {
+	p.Infof("Taint %v.", p.Server)
+	err := taint(ctx, p.Client.CoreV1().Nodes(), p.Server.KubeNodeID(), addTaint(true))
 	return trace.Wrap(err)
 }
 
@@ -196,7 +195,7 @@ type kubernetesOperation struct {
 
 // PreCheck makes sure the phase is being executed on the correct server
 func (p *kubernetesOperation) PreCheck(context.Context) error {
-	return trace.Wrap(fsm.CheckMasterServer(p.Servers))
+	return trace.Wrap(libfsm.CheckMasterServer(p.Servers))
 }
 
 // PostCheck is no-op for this phase

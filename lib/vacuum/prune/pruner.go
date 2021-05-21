@@ -34,6 +34,7 @@ type Pruner interface {
 }
 
 // PrintStep formats the specified message string to stdout
+//nolint:goprintffuncname
 func (r Config) PrintStep(format string, args ...interface{}) {
 	if r.DryRun {
 		format = "[dry-run] " + format
