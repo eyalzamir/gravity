@@ -1898,6 +1898,7 @@ func (p *Process) newTLSConfig(certPEM, keyPEM []byte) (*tls.Config, error) {
 		return nil, trace.Wrap(err)
 	}
 
+	//nolint:gosec // TODO: set MinVersion
 	config := &tls.Config{}
 
 	config.GetCertificate = func(chi *tls.ClientHelloInfo) (*tls.Certificate, error) {
@@ -2247,7 +2248,7 @@ func (p *Process) ensureClusterState() error {
 		state = append(state, server)
 	}
 	site.ClusterState.Servers = append(site.ClusterState.Servers, state...)
-	_, err = p.backend.UpdateSite(*(*storage.Site)(site))
+	_, err = p.backend.UpdateSite(*site)
 	if err != nil {
 		return trace.Wrap(err)
 	}

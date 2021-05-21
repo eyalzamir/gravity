@@ -31,6 +31,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	grpcbackoff "google.golang.org/grpc/backoff"
 	"google.golang.org/grpc/credentials"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -68,11 +69,7 @@ func NewPeer(config PeerConfig, serverAddr string) (*PeerServer, error) {
 		ReconnectStrategy: config.ReconnectStrategy,
 	}
 	// checker watches the connection to controlling server
-	checker, err := newPeers([]Peer{serverPeer}, peersConfig)
-	if err != nil {
-		return nil, trace.Wrap(err)
-	}
-
+	checker := newPeers([]Peer{serverPeer}, peersConfig)
 	peer := &PeerServer{
 		PeerConfig: config,
 		server:     server,
@@ -213,10 +210,10 @@ type PeerServer struct {
 }
 
 // NewPeer is a no-op
-func (_ discardStore) NewPeer(context.Context, pb.PeerJoinRequest, Peer) error { return nil }
+func (discardStore) NewPeer(context.Context, pb.PeerJoinRequest, Peer) error { return nil }
 
 // RemovePeer is a no-op
-func (_ discardStore) RemovePeer(context.Context, pb.PeerLeaveRequest, Peer) error { return nil }
+func (discardStore) RemovePeer(context.Context, pb.PeerLeaveRequest, Peer) error { return nil }
 
 // discardStore is a no-op implementation of PeerStore
 type discardStore struct{}
@@ -335,8 +332,13 @@ type remotePeer struct {
 }
 
 func newClient(ctx context.Context, creds credentials.TransportCredentials, addr string, dialOpts ...grpc.DialOption) (*agentClient, error) {
+	bc := grpcbackoff.DefaultConfig
+	bc.MaxDelay = defaults.RPCAgentBackoffThreshold
 	opts := []grpc.DialOption{
-		grpc.WithBackoffConfig(grpc.BackoffConfig{MaxDelay: defaults.RPCAgentBackoffThreshold}),
+		// See https://github.com/grpc/grpc-go/issues/4461
+		grpc.WithConnectParams(grpc.ConnectParams{
+			Backoff: bc,
+		}),
 		grpc.WithBlock(),
 		grpc.WithTransportCredentials(creds),
 	}

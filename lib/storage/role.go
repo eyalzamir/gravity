@@ -321,7 +321,7 @@ type RoleSpecV2 struct {
 	// NodeLabels is a set of matching labels that users of this role
 	// will be allowed to access
 	NodeLabels map[string]string `json:"node_labels,omitempty"`
-	// Namespaces is a list of namespaces, guarding accesss to resources
+	// Namespaces is a list of namespaces, guarding access to resources
 	Namespaces []string `json:"namespaces,omitempty"`
 	// Resources limits access to resources
 	Resources map[string][]string `json:"resources,omitempty"`

@@ -120,13 +120,13 @@ func processStream(stream pb.IncomingMessageStream, log logrus.FieldLogger, stdo
 		case *pb.Message_ExecOutput:
 			err = trace.Wrap(streamCtx.processExecOutput(elem.ExecOutput, stdout, stderr))
 		case *pb.Message_ExecStarted:
-			err = trace.Wrap(streamCtx.processExecStarted(elem.ExecStarted))
+			streamCtx.processExecStarted(elem.ExecStarted)
 		case *pb.Message_ExecCompleted:
-			err = trace.Wrap(streamCtx.processExecCompleted(elem.ExecCompleted))
+			streamCtx.processExecCompleted(elem.ExecCompleted)
 		case *pb.Message_LogEntry:
-			err = trace.Wrap(streamCtx.processLogEntry(elem.LogEntry))
+			streamCtx.processLogEntry(elem.LogEntry)
 		case *pb.Message_Error:
-			err = trace.Wrap(streamCtx.processError(elem.Error))
+			streamCtx.processError(elem.Error)
 		default:
 			err = trace.BadParameter("unexpected message %+v", msg.Element)
 		}
@@ -162,23 +162,21 @@ func (s *streamContext) processExecOutput(msg *pb.ExecOutput, stdout, stderr io.
 	return nil
 }
 
-func (s *streamContext) processExecStarted(msg *pb.ExecStarted) error {
+func (s *streamContext) processExecStarted(msg *pb.ExecStarted) {
 	s.commands[msg.Seq] = msg.Args
 	s.log.WithFields(logrus.Fields{trace.Component: "rpc",
 		"seq": msg.Seq,
 	}).Debugf("Run %q.", msg.Args)
-	return nil
 }
 
-func (s *streamContext) processExecCompleted(msg *pb.ExecCompleted) error {
+func (s *streamContext) processExecCompleted(msg *pb.ExecCompleted) {
 	s.log.WithFields(logrus.Fields{trace.Component: "rpc",
 		"seq":  msg.Seq,
 		"exit": msg.ExitCode,
 	}).Debug("Completed.")
-	return nil
 }
 
-func (s *streamContext) processLogEntry(msg *pb.LogEntry) error {
+func (s *streamContext) processLogEntry(msg *pb.LogEntry) {
 	fields := logrus.Fields{}
 	for k, v := range msg.Fields {
 		fields[k] = v
@@ -201,11 +199,8 @@ func (s *streamContext) processLogEntry(msg *pb.LogEntry) error {
 	default:
 		entry.Error(msg.Message)
 	}
-
-	return nil
 }
 
-func (s *streamContext) processError(msg *pb.Error) error {
+func (s *streamContext) processError(msg *pb.Error) {
 	s.log.Error(msg.Message)
-	return nil
 }

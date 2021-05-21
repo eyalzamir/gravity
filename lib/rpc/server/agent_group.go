@@ -49,11 +49,7 @@ func NewAgentGroup(config AgentGroupConfig, from []Peer) (*AgentGroup, error) {
 		watchCh:           watchCh,
 		checkTimeout:      config.HealthCheckTimeout,
 	}
-	peers, err := newPeers(from, peersConfig)
-	if err != nil {
-		return nil, trace.Wrap(err)
-	}
-
+	peers := newPeers(from, peersConfig)
 	ctx, cancel := context.WithCancel(context.TODO())
 	group := &AgentGroup{
 		AgentGroupConfig: config,

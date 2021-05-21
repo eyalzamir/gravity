@@ -17,7 +17,7 @@ limitations under the License.
 package v1
 
 import (
-	"k8s.io/api/batch/v1"
+	v1 "k8s.io/api/batch/v1"
 )
 
 // Hooks defines a set of application lifecycle hooks in effect
@@ -67,6 +67,7 @@ type Hooks struct {
 }
 
 // AllHooks returns all non-nil hooks.
+//nolint:stylecheck // TODO: receiver names 'in' (in auto-generated code) vs 'h'
 func (h Hooks) AllHooks() []*HooksBase {
 	all := []*HooksBase{h.Install, h.Uninstall, h.Installed, h.Uninstalling, h.NodeAdding, h.NodeAdded,
 		h.NodeRemoving, h.NodeRemoved, h.Updating, h.Updated, h.Status, h.Info,

@@ -17,6 +17,7 @@ limitations under the License.
 package resources
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -158,17 +159,17 @@ func (r ResourceFiles) Images() ([]string, error) {
 }
 
 // ManifestRewriteFunc defines an interface for functions that can update parts of an application manifest
-type ManifestRewriteFunc func(m *schema.Manifest) error
+type ManifestRewriteFunc func(context.Context, *schema.Manifest) error
 
 // RewriteManifest rewrites parts of the application manifest resources by application
 // of the specified set of rewrite functions
-func (r *ResourceFiles) RewriteManifest(rewrites ...ManifestRewriteFunc) error {
+func (r *ResourceFiles) RewriteManifest(ctx context.Context, rewrites ...ManifestRewriteFunc) error {
 	for _, file := range *r {
 		for _, object := range file.Objects {
 			switch manifest := object.(type) {
 			case *schema.Manifest:
 				for _, rewrite := range rewrites {
-					if err := rewrite(manifest); err != nil {
+					if err := rewrite(ctx, manifest); err != nil {
 						return trace.Wrap(err)
 					}
 				}

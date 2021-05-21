@@ -212,7 +212,7 @@ func (u *UserV2) SetExpiry(expires time.Time) {
 	u.Metadata.SetExpiry(expires)
 }
 
-// Expires retuns object expiry setting
+// Expires returns object expiry setting
 func (u *UserV2) Expiry() time.Time {
 	return u.Metadata.Expiry()
 }

@@ -59,8 +59,8 @@ type RepositoryV2 struct {
 }
 
 // GetName returns cluster name and is a shortcut for GetMetadata().Name
-func (t *RepositoryV2) GetName() string {
-	return t.Metadata.Name
+func (c *RepositoryV2) GetName() string {
+	return c.Metadata.Name
 }
 
 // SetName sets cluster name
