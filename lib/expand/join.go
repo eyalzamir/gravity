@@ -548,6 +548,7 @@ func (p *Peer) executeSinglePhase(ctx context.Context, opCtx operationContext, p
 }
 
 // printStep publishes a progress entry described with (format, args) tuple to the client
+//nolint:goprintffuncname
 func (p *Peer) printStep(format string, args ...interface{}) {
 	event := dispatcher.Event{Progress: &ops.ProgressEntry{Message: fmt.Sprintf(format, args...)}}
 	p.dispatcher.Send(event)

@@ -257,7 +257,7 @@ func (p *bootstrapExecutor) configureSystemDirectories(ctx context.Context) erro
 	for _, dir := range chownList {
 		p.Infof("Setting ownership on system directory %v to %v:%v.",
 			dir, p.ServiceUser.UID, p.ServiceUser.GID)
-		out, err := exec.Command("chown", "-R", fmt.Sprintf("%v:%v",
+		out, err := exec.CommandContext(ctx, "chown", "-R", fmt.Sprintf("%v:%v",
 			p.ServiceUser.UID, p.ServiceUser.GID), dir).CombinedOutput()
 		if err != nil {
 			return trace.Wrap(err, "failed to chown %v: %s", dir, out)

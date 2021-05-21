@@ -45,8 +45,11 @@ func (r ProgressResponse_Status) String() string {
 		return "completed"
 	case StatusCompletedPending:
 		return "pending"
+	case StatusAborted:
+		return "aborted"
+	default:
+		return "unknown"
 	}
-	return "unknown"
 }
 
 // KeyFromProto converts the specified operation key to internal format

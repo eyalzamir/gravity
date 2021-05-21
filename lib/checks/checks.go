@@ -608,11 +608,7 @@ func (r *checker) checkTempDir(ctx context.Context, server Server) error {
 
 // checkPorts makes sure ports specified in profile are unoccupied and reachable
 func (r *checker) checkPorts(ctx context.Context, servers []Server) error {
-	req, err := constructPingPongRequest(servers, r.Requirements)
-	if err != nil {
-		return trace.Wrap(err)
-	}
-
+	req := constructPingPongRequest(servers, r.Requirements)
 	log.Infof("Ping pong request: %v.", req)
 
 	if len(req) == 0 {
@@ -641,11 +637,7 @@ func (r *checker) checkBandwidth(ctx context.Context, servers []Server) error {
 		return nil
 	}
 
-	req, err := constructBandwidthRequest(servers)
-	if err != nil {
-		return trace.Wrap(err)
-	}
-
+	req := constructBandwidthRequest(servers)
 	log.Infof("Bandwidth test request: %v.", req)
 
 	resp, err := r.Remote.CheckBandwidth(ctx, req)
@@ -916,7 +908,7 @@ func portRange(rs []schema.PortRange) (result []monitoring.PortRange) {
 }
 
 // constructPingPongRequest constructs a regular ping-pong game request
-func constructPingPongRequest(servers []Server, requirements map[string]Requirements) (PingPongGame, error) {
+func constructPingPongRequest(servers []Server, requirements map[string]Requirements) PingPongGame {
 	game := make(PingPongGame, len(servers))
 	var listenServers []validationpb.Addr
 	for _, server := range servers {
@@ -954,11 +946,11 @@ func constructPingPongRequest(servers []Server, requirements map[string]Requirem
 		game[ip] = req
 	}
 
-	return game, nil
+	return game
 }
 
 // constructBandwidthRequest constructs a ping-pong game request for a bandwidth test
-func constructBandwidthRequest(servers []Server) (PingPongGame, error) {
+func constructBandwidthRequest(servers []Server) PingPongGame {
 	// use up to defaults.BandwidthTestMaxServers servers for the test
 	servers = servers[:utils.Min(len(servers), defaults.BandwidthTestMaxServers)]
 
@@ -983,7 +975,7 @@ func constructBandwidthRequest(servers []Server) (PingPongGame, error) {
 		}
 	}
 
-	return game, nil
+	return game
 }
 
 func findServer(servers []Server, addr string) (*Server, error) {

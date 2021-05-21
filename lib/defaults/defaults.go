@@ -607,7 +607,7 @@ const (
 	LograngeAggregatorServiceName = "lr-aggregator"
 
 	// WriteFactor is a default amount of acknowledged writes for object storage
-	// to be considered successfull
+	// to be considered successful
 	WriteFactor = 1
 
 	// ElectionTerm is a leader election term for multiple gravity instances
@@ -740,7 +740,7 @@ const (
 	RoleMaster = "master"
 
 	// DockerDeviceCapacity defines the baseline size for the docker devicemapper device
-	// used by default if no backend and no size has been explicitely specified
+	// used by default if no backend and no size has been explicitly specified
 	DockerDeviceCapacity = "4GB"
 
 	// DockerBridge specifies the default name of the docker bridge
@@ -1318,7 +1318,7 @@ var (
 	// DockerRegistry is a default name for private docker registry
 	DockerRegistry = DockerRegistryAddr("leader.telekube.local")
 
-	// NetworkIntefacePrefixes is a list of Kubernetes-specific network interface prefixes.
+	// NetworkInterfacePrefixes is a list of Kubernetes-specific network interface prefixes.
 	NetworkInterfacePrefixes = []string{
 		"docker",
 		"flannel",

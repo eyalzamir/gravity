@@ -24,7 +24,7 @@ import (
 	"github.com/gravitational/gravity/lib/utils"
 
 	"github.com/gravitational/trace"
-	. "gopkg.in/check.v1"
+	. "gopkg.in/check.v1" //nolint:stylecheck // tests will be rewritten to use testify
 )
 
 type BLOBSuite struct {

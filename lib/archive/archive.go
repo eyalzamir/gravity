@@ -364,6 +364,7 @@ func MustCreateMemArchive(items []*Item) *bytes.Buffer {
 }
 
 // Abort is a special error value used to abort an iteration
+// nolint:stylecheck
 var Abort = errors.New("abort iteration")
 
 // extractFile extracts a single file or directory from tarball into dir.
@@ -377,6 +378,7 @@ func extractFile(tarball *tar.Reader, header *tar.Header, dir, path string) erro
 	case tar.TypeBlock, tar.TypeChar, tar.TypeReg, tar.TypeRegA, tar.TypeFifo:
 		return writeFile(targetPath, tarball, header.FileInfo().Mode())
 	case tar.TypeLink:
+		//nolint:gosec // the linkname had been sanitized with SanitizeTarPath
 		return writeHardLink(targetPath, filepath.Join(dir, header.Linkname))
 	case tar.TypeSymlink:
 		return writeSymbolicLink(targetPath, header.Linkname)
@@ -390,6 +392,7 @@ func extractFile(tarball *tar.Reader, header *tar.Header, dir, path string) erro
 // links that could escape the tar file (e.g. ../../etc/passwrd)
 func SanitizeTarPath(header *tar.Header, dir string) error {
 	// Security: sanitize that all tar paths resolve to within the destination directory
+	//nolint:gosec
 	destPath := filepath.Join(dir, header.Name)
 	if !strings.HasPrefix(destPath, filepath.Clean(dir)+string(os.PathSeparator)) {
 		return trace.BadParameter("%s: illegal file path", header.Name).AddField("prefix", dir)
@@ -402,6 +405,7 @@ func SanitizeTarPath(header *tar.Header, dir string) error {
 			}
 		} else {
 			// relative paths are relative to the filename after extraction to a directory
+			//nolint:gosec
 			linkPath := filepath.Join(dir, filepath.Dir(header.Name), header.Linkname)
 			if !strings.HasPrefix(linkPath, filepath.Clean(dir)+string(os.PathSeparator)) {
 				return trace.BadParameter("%s: illegal link path", header.Linkname).AddField("prefix", dir)

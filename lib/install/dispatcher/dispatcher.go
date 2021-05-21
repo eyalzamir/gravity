@@ -75,6 +75,10 @@ func (r *Event) AsProgressResponse() *installpb.ProgressResponse {
 		resp.Status = installpb.StatusCompleted
 	case StatusCompletedPending:
 		resp.Status = installpb.StatusCompletedPending
+	case StatusAborted:
+		resp.Status = installpb.StatusAborted
+	case StatusUnknown:
+		resp.Status = installpb.StatusUnknown
 	}
 	return resp
 }
@@ -99,12 +103,14 @@ type Status byte
 
 const (
 	// StatusUnknown indicates an unknown progress status
-	StatusUnknown Status = 0
+	StatusUnknown Status = iota
 	// StatusCompleted indicates a completed operation
-	StatusCompleted Status = iota
+	StatusCompleted
 	// StatusCompletedPending indicates a completed operation
 	// but with installer still active
-	StatusCompletedPending Status = iota
+	StatusCompletedPending
+	// StatusAborted indicates an aborted operation
+	StatusAborted
 )
 
 // NewProgressReporter creates a new progress reporter using the specified dispatcher disp
