@@ -247,6 +247,7 @@ build-in-container: buildbox
 golint: buildbox
 	docker run --rm=true $(NOROOT) \
 		   -v $(TOP):$(SRCDIR) \
+		   -w /gopath/src/github.com/gravitational/gravity \
 		   -e "LOCAL_BUILDDIR=$(LOCAL_BUILDDIR)" \
 		   -e "LOCAL_GRAVITY_BUILDDIR=$(LOCAL_GRAVITY_BUILDDIR)" \
 		   -e "GRAVITY_PKG_PATH=$(GRAVITY_PKG_PATH)" \

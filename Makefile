@@ -770,7 +770,8 @@ golangci-verify: GOLANGCI_INSTALLED_VER_MAJOR=$(eval value := $$(shell $(GOLINT)
 golangci-verify: GOLANGCI_INSTALLED_VER_MINOR=$(eval value := $$(shell $(GOLINT) version --format=short 2>&1 | cut -f2 -d.))$(value)
 golangci-verify:
 ifndef GOLANGCI_INSTALLED
-$(error This step requires $(GOLINT) to be installed)
+	@echo This step requires $(GOLINT) to be installed
+	exit 1
 endif
 	@if [ "$(GOLANGCI_INSTALLED_VER_MAJOR:v%=%)" -eq "$(GOLANGCI_REQUIRED_MAJOR)" ] && \
 		[ "$(GOLANGCI_INSTALLED_VER_MINOR)" -lt "$(GOLANGCI_REQUIRED_MINOR)" ]; then \
