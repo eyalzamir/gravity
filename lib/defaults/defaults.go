@@ -500,6 +500,9 @@ const (
 	// PrivateDirMask is a mask for private directories
 	PrivateDirMask = 0700
 
+	// PrivateExecutableFileMask is a mask for private binaries
+	PrivateExecutableFileMask = 0700
+
 	// PrivateFileMask is a mask for private files
 	PrivateFileMask = 0600
 

@@ -398,7 +398,7 @@ func RegisterCommands(app *kingpin.Application) *Application {
 	// get status of an application
 	g.AppStatusCmd.CmdClause = g.AppCmd.Command("status", "get app status").Hidden()
 	g.AppStatusCmd.Locator = Locator(g.AppStatusCmd.Arg("pkg", "application package").Required())
-	g.AppStatusCmd.OpsCenterURL = g.AppStatusCmd.Flag("ops-url", "[unused] optional remote Gravity Hub").Hidden().String()
+	g.AppStatusCmd.OpsCenterURL = g.AppStatusCmd.Flag("ops-url", "optional remote Gravity Hub").String()
 
 	// pull an application from a remote OpsCenter
 	g.AppPullCmd.CmdClause = g.AppCmd.Command("pull", "pull an application package from remote Gravity Hub").Hidden()
@@ -616,7 +616,7 @@ func RegisterCommands(app *kingpin.Application) *Application {
 
 	// complete install step
 	g.SiteCompleteCmd.CmdClause = g.SiteCmd.Command("complete", "Marks the final install step as completed").Hidden()
-	g.SiteCompleteCmd.Support = g.SiteCompleteCmd.Flag("support", "[unused] set remote support status: 'on' or 'off'").Default("on").Hidden().String()
+	g.SiteCompleteCmd.Support = g.SiteCompleteCmd.Flag("support", "set remote support status: 'on' or 'off'").Default("on").String()
 
 	// password reset for local gravity site user
 	g.SiteResetPasswordCmd.CmdClause = g.SiteCmd.Command("reset-password", "reset password for local user").Hidden()
@@ -749,7 +749,7 @@ func RegisterCommands(app *kingpin.Application) *Application {
 
 	g.SystemSelinuxBootstrapCmd.CmdClause = g.SystemCmd.Command("selinux-bootstrap", "Configure SELinux file contexts and ports on the node")
 	g.SystemSelinuxBootstrapCmd.Path = g.SystemSelinuxBootstrapCmd.Flag("output", "Path to output file for bootstrap script").String()
-	g.SystemSelinuxBootstrapCmd.VxlanPort = g.SystemSelinuxBootstrapCmd.Flag("vxlan-port", "[unused] Custom vxlan port").Hidden().Int()
+	g.SystemSelinuxBootstrapCmd.VxlanPort = g.SystemSelinuxBootstrapCmd.Flag("vxlan-port", "Custom vxlan port").Int()
 
 	// pruning cluster resources
 	g.GarbageCollectCmd.CmdClause = g.Command("gc", "Prune cluster resources")

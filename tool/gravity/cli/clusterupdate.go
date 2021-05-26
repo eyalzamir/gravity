@@ -69,7 +69,7 @@ func updateCheck(env *localenv.LocalEnvironment, updatePackage string) error {
 }
 
 func newUpgradeConfig(g *Application) (*upgradeConfig, error) {
-	values, err := helm.Vals(*g.UpgradeCmd.Values, *g.UpgradeCmd.Set, nil, nil)
+	values, err := helm.Vals(*g.UpgradeCmd.Values, *g.UpgradeCmd.Set, nil, nil, "", "", "")
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}

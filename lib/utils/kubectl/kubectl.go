@@ -138,7 +138,7 @@ func GetPodContainers(ctx context.Context, namespace, pod string, runner utils.C
 	return containers, nil
 }
 
-// GetNodeAddresses returns internal IP addresses of all nodes in the cluster
+// GetNodesAddr returns internal IP addresses of all nodes in the cluster
 func GetNodesAddr(ctx context.Context) ([]string, error) {
 	args := utils.PlanetCommand(Command("get", "nodes",
 		"--output",

@@ -43,6 +43,7 @@ type Printer interface {
 	PrintStep(format string, args ...interface{})
 }
 
+// DiscardPrinter is a Printer that discards all input
 var DiscardPrinter = nopPrinter{}
 
 func (nopPrinter) Write(p []byte) (int, error)               { return 0, nil }

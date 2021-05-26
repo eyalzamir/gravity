@@ -242,7 +242,7 @@ fi
 `, int(delay/time.Second), strings.Join(args, " "))
 
 	scriptPath := filepath.Join(dir, "script.sh")
-	if err := ioutil.WriteFile(scriptPath, []byte(script), defaults.PrivateFileMask); err != nil {
+	if err := ioutil.WriteFile(scriptPath, []byte(script), defaults.PrivateExecutableFileMask); err != nil {
 		return trace.Wrap(err)
 	}
 

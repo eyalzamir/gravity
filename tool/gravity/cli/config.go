@@ -239,7 +239,7 @@ func NewInstallConfig(env *localenv.LocalEnvironment, g *Application) (*InstallC
 		// case somebody is still using it
 		mode = constants.InstallModeInteractive
 	}
-	values, err := helm.Vals(*g.InstallCmd.Values, *g.InstallCmd.Set, nil, nil)
+	values, err := helm.Vals(*g.InstallCmd.Values, *g.InstallCmd.Set, nil, nil, "", "", "")
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
@@ -829,7 +829,7 @@ func (i *InstallConfig) validateCloudConfig(manifest schema.Manifest) (err error
 
 // NewWizardConfig returns new configuration for the interactive installer
 func NewWizardConfig(env *localenv.LocalEnvironment, g *Application) (*InstallConfig, error) {
-	values, err := helm.Vals(*g.WizardCmd.Values, *g.WizardCmd.Set, nil, nil)
+	values, err := helm.Vals(*g.WizardCmd.Values, *g.WizardCmd.Set, nil, nil, "", "", "")
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}

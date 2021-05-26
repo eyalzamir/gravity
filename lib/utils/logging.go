@@ -63,6 +63,7 @@ func InitGRPCLoggerWithDefaults() {
 	InitGRPCLogger("info", 10)
 }
 
+// InitGRPCLogger initializes the logger with specified severity and verbosity.
 // Severity level is one of `info`, `warning` or `error` and defaults to error if unspecified.
 // Verbosity is a non-negative integer.
 func InitGRPCLogger(severityLevel string, verbosity int) {
