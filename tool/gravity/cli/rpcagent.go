@@ -156,7 +156,7 @@ func newAgent() (rpcserver.Server, error) {
 
 type agentFunc func(ctx context.Context, localEnv, upgradeEnv *localenv.LocalEnvironment, args []string) error
 
-var agentFunctions map[string]agentFunc = map[string]agentFunc{
+var agentFunctions = map[string]agentFunc{
 	constants.RPCAgentUpgradeFunction:  executeAutomaticUpgrade,
 	constants.RPCAgentSyncPlanFunction: executeSyncOperationPlan,
 }
