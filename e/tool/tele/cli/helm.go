@@ -70,6 +70,9 @@ func (o *repoAddOptions) repoAdd() (err error) {
 	defer func() {
 		errUnlock := fileLock.Unlock()
 		if err != nil {
+			if errUnlock != nil {
+				log.WithError(errUnlock).Error("Failed to unlock the file lock.")
+			}
 			return
 		}
 		err = errUnlock
