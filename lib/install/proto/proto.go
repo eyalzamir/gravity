@@ -40,16 +40,14 @@ func (r *ProgressResponse) IsCompleted() bool {
 
 // String formats this status as text
 func (r ProgressResponse_Status) String() string {
+	//nolint:exhaustive // TODO(dima): add explicit cases for StatusAborted, StatusUnknown
 	switch r {
 	case StatusCompleted:
 		return "completed"
 	case StatusCompletedPending:
 		return "pending"
-	case StatusAborted:
-		return "aborted"
-	default:
-		return "unknown"
 	}
+	return "unknown"
 }
 
 // KeyFromProto converts the specified operation key to internal format
