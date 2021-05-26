@@ -28,7 +28,6 @@ import (
 	"github.com/gravitational/gravity/lib/pack"
 	"github.com/gravitational/gravity/lib/storage"
 
-	dockerarchive "github.com/docker/docker/pkg/archive"
 	"github.com/gravitational/configure/cstrings"
 	"github.com/gravitational/trace"
 	"github.com/mailgun/timetools"
@@ -383,14 +382,9 @@ func (p *PackageServer) UnpackedPath(loc loc.Locator) (string, error) {
 	return pack.PackagePath(p.cfg.UnpackedDir, loc), nil
 }
 
+// Unpack unpacks the package specified with loc in targetDir
 func (p *PackageServer) Unpack(loc loc.Locator, targetDir string) error {
-	return p.UnpackWithOptions(loc, targetDir, nil)
-}
-
-// UnpackWithOptions unpacks the package specified with loc in targetDir
-// using opts for extraction
-func (p *PackageServer) UnpackWithOptions(loc loc.Locator, targetDir string, opts *dockerarchive.TarOptions) (err error) {
-	loc, err = p.processMetadata(loc)
+	loc, err := p.processMetadata(loc)
 	if err != nil {
 		return trace.Wrap(err)
 	}
@@ -409,7 +403,7 @@ func (p *PackageServer) UnpackWithOptions(loc loc.Locator, targetDir string, opt
 		log.WithField("package", loc).Info("Package is already unpacked.")
 		return nil
 	}
-	if err := pack.Unpack(p, loc, targetDir, opts); err != nil {
+	if err := pack.Unpack(p, loc, targetDir, nil); err != nil {
 		return trace.Wrap(err)
 	}
 	return nil

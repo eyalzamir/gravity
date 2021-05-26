@@ -38,6 +38,7 @@ func NewClient(ctx context.Context, config ClientConfig) (AgentClient, error) {
 		// Don't use TLS, as we communicate over domain sockets
 		grpc.WithInsecure(),
 		// Retry every second after failure
+		// See https://github.com/grpc/grpc-go/issues/4461
 		grpc.WithConnectParams(grpc.ConnectParams{
 			Backoff: backoff,
 		}),
