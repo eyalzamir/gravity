@@ -355,7 +355,7 @@ func (m Manifest) RuntimeImages() (images []string) {
 }
 
 // AllPackageDependencies returns the list of all available package dependencies
-//nolint:stylecheck // TODO: receiver names 'in' (in auto-generated code) vs 'd'
+//nolint:stylecheck // TODO: receiver names 'in' (in auto-generated code) vs 'm'
 func (m Manifest) AllPackageDependencies() (deps []loc.Locator) {
 	if m.SystemOptions != nil && m.SystemOptions.Dependencies.Runtime != nil {
 		deps = append(deps, m.SystemOptions.Dependencies.Runtime.Locator)
