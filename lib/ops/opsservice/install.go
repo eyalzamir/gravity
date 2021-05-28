@@ -451,7 +451,7 @@ func (s *site) updateOperationState(op *ops.SiteOperation, req ops.OperationUpda
 
 	servers := req.Servers
 	if op.Provisioner == schema.ProvisionerOnPrem {
-		servers, err = s.configureOnPremServers(ctx, req.Servers, infos)
+		servers, err = s.configureOnPremServers(req.Servers, infos)
 		if err != nil {
 			return trace.Wrap(err)
 		}
@@ -656,7 +656,7 @@ func (s *site) checkLicenseOnPrem(license licenseapi.License, op *ops.SiteOperat
 // directory unless it has already been created.
 // Returns the list of servers to set as structured operation state.
 // Modifies remoteServers with details obtained from corresponding agents in-place.
-func (s *site) configureOnPremServers(ctx *operationContext, servers []storage.Server, infos checks.ServerInfos) (updated []storage.Server, err error) {
+func (s *site) configureOnPremServers(servers []storage.Server, infos checks.ServerInfos) (updated []storage.Server, err error) {
 	updated = make([]storage.Server, 0, len(servers))
 	for i, server := range servers {
 		info, err := infos.FindByIP(server.AdvertiseIP)

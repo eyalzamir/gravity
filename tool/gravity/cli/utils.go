@@ -236,7 +236,7 @@ func isCancelledError(err error) bool {
 	return trace.IsCompareFailed(err) && strings.Contains(err.Error(), "cancelled")
 }
 
-func watchReconnects(ctx context.Context, cancel context.CancelFunc, watchCh <-chan rpcserver.WatchEvent) {
+func watchReconnects(cancel context.CancelFunc, watchCh <-chan rpcserver.WatchEvent) {
 	go func() {
 		for event := range watchCh {
 			if event.Error == nil {

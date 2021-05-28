@@ -158,7 +158,7 @@ type Config struct {
 	// systemInfo queries system information
 	systemInfo
 	// commandExecutor is a system command executor.
-	// Being an interface provides necessary flexibiltiy for testing.
+	// Being an interface provides necessary flexibility for testing.
 	commandExecutor
 	// closers lists additional resources to close upon receiving a stop command
 	//nolint:structcheck

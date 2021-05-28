@@ -61,11 +61,7 @@ func (b *applicationBuilder) Build(ctx context.Context, req ApplicationRequest) 
 		return trace.Wrap(err)
 	}
 
-	manifest, err := generateApplicationImageManifest(chart)
-	if err != nil {
-		return trace.Wrap(err)
-	}
-
+	manifest := generateApplicationImageManifest(chart)
 	outputPath, err := checkOutputPath(manifest, req.OutputPath, req.Overwrite)
 	if err != nil {
 		return trace.Wrap(err)

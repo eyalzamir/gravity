@@ -37,7 +37,6 @@ import (
 	"github.com/gravitational/gravity/lib/utils"
 
 	"github.com/gravitational/roundtrip"
-	"github.com/gravitational/satellite/agent/proto/agentpb"
 	pb "github.com/gravitational/satellite/agent/proto/agentpb"
 	"github.com/gravitational/satellite/monitoring"
 	"github.com/gravitational/trace"
@@ -184,7 +183,7 @@ func getLocalNodeStatus(ctx context.Context) (err error) {
 	if err != nil {
 		return trace.Wrap(err)
 	}
-	if status.GetSystemStatus() != agentpb.SystemStatus_Running {
+	if status.GetSystemStatus() != pb.SystemStatus_Running {
 		return trace.BadParameter("node is degraded")
 	}
 	return nil
@@ -407,10 +406,6 @@ type ClusterServer struct {
 	InstanceID string `json:"instance_id,omitempty"`
 	// InstanceType is the node cloud specific instance Type
 	InstanceType string `json:"instance_type,omitempty"`
-}
-
-func (r ClusterOperation) isFailed() bool {
-	return r.State == ops.OperationStateFailed
 }
 
 // String returns a textual representation of this system status

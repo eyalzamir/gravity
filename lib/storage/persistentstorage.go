@@ -299,7 +299,7 @@ var PersistentStorageSpecV1Schema = `{
 
 // NDMConfig represents the OpenEBS Node Device Manager configuration.
 type NDMConfig struct {
-	// ProbeConfigs containts probes NDM performs when discovering devices.
+	// ProbeConfigs contains probes NDM performs when discovering devices.
 	ProbeConfigs []*NDMProbe `yaml:"probeconfigs"`
 	// FilterConfigs contains filters NDM considers when discovering devices.
 	FilterConfigs []*NDMFilter `yaml:"filterconfigs"`

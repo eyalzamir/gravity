@@ -28,15 +28,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// NewDockerPuller returns an instance of DockerPuller using the specified client
+// NewPuller returns an instance of Puller using the specified client
 // and credentials
-func NewDockerPuller(client DockerInterface) *dockerPuller {
+func NewPuller(client Interface) *dockerPuller {
 	return &dockerPuller{client: client}
 }
 
 // dockerPuller implements a DockerPuller
 type dockerPuller struct {
-	client DockerInterface
+	client Interface
 }
 
 // Pull pulls an image using "docker pull" command that lets us take advantage of its cached

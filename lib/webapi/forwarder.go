@@ -182,6 +182,7 @@ func (f *forwarder) newKubeForwarder(ctx *sessionContext) (*forward.Forwarder, e
 		return nil, trace.BadParameter("failed to append certs from PEM")
 	}
 
+	//nolint:gosec // TODO: set MinVersion
 	tlsConfig := &tls.Config{
 		RootCAs:      pool,
 		Certificates: []tls.Certificate{cert},

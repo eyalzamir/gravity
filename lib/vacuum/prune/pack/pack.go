@@ -84,7 +84,7 @@ type Config struct {
 // packageService defines the subset of package APIs as required for pruning
 type packageService interface {
 	GetRepositories() ([]string, error)
-	GetPackages(respository string) ([]pack.PackageEnvelope, error)
+	GetPackages(repository string) ([]pack.PackageEnvelope, error)
 	ReadPackageEnvelope(loc.Locator) (*pack.PackageEnvelope, error)
 	DeletePackage(loc.Locator) error
 }
@@ -193,12 +193,7 @@ func (r *cleanup) build(required packageMap) (state map[loc.Locator]statePackage
 			}
 
 			for _, item := range items {
-				deletePackage, err := r.shouldDeletePackage(item.existingPackage, required)
-				if err != nil {
-					return nil, trace.Wrap(err)
-				}
-
-				if !deletePackage {
+				if !r.shouldDeletePackage(item.existingPackage, required) {
 					continue
 				}
 
@@ -234,21 +229,21 @@ func (r *cleanup) deletePackage(item statePackage) error {
 // It will match the package against the specified map of required packages.
 // It will also apply a couple of additional ad-hoc heuristics to decide if a package
 // should be deleted
-func (r *cleanup) shouldDeletePackage(pkg existingPackage, required packageMap) (delete bool, err error) {
+func (r *cleanup) shouldDeletePackage(pkg existingPackage, required packageMap) (delete bool) {
 	log := r.WithField("package", pkg.Locator)
 
 	if existingVersion, exists := required[pkg.Locator.ZeroVersion()]; exists {
 		if existingVersion.Compare(pkg.Version) > 0 {
 			log.Debug("Will delete an obsolete package.")
-			return true, nil
+			return true
 		}
 		log.Debug("Will not delete a package still in use.")
-		return false, nil
+		return false
 	}
 
 	if loc.IsLegacyRuntimePackage(pkg.PackageEnvelope.Locator) {
 		log.Debug("Will delete a legacy runtime package.")
-		return true, nil
+		return true
 	}
 
 	if isRPCUpdateCredentialsPackage(pkg.PackageEnvelope) && pkg.Version.Compare(r.runtimeVersion) < 0 {
@@ -256,16 +251,16 @@ func (r *cleanup) shouldDeletePackage(pkg existingPackage, required packageMap) 
 		// All RPC packages with versions prior or equal to the currently
 		// installed runtime version are eligible for removal.
 		log.Debug("Will delete an obsolete RPC credentials package.")
-		return true, nil
+		return true
 	}
 
 	if pkg.Locator.Repository != defaults.SystemAccountOrg {
 		log.Debug("Will not delete from a custom repository.")
-		return false, nil
+		return false
 	}
 
 	log.Debug("Will not delete an unknown package.")
-	return false, nil
+	return false
 }
 
 // withDependencies computes owner packages for the specified package pkg using

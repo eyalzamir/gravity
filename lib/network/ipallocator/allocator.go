@@ -208,9 +208,8 @@ func RangeSize(subnet *net.IPNet) int64 {
 	// the bitmap to 64k.
 	if bits == 128 && (bits-ones) >= 16 {
 		return int64(1) << uint(16)
-	} else {
-		return int64(1) << uint(bits-ones)
 	}
+	return int64(1) << uint(bits-ones)
 }
 
 // GetIndexedIP returns a net.IP that is subnet.IP + index in the contiguous IP space.

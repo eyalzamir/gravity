@@ -159,7 +159,7 @@ type TranslateImageRequest struct {
 	// Package specifies the resulting telekube package
 	Package loc.Locator
 	// Client is the docker client
-	DockerInterface
+	Interface
 	// PackageService is the package service to create package in
 	pack.PackageService
 }

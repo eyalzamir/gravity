@@ -25,7 +25,7 @@ import (
 	telecfg "github.com/gravitational/teleport/lib/config"
 	"github.com/gravitational/trace"
 	yaml2 "gopkg.in/yaml.v2"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -65,7 +65,7 @@ type SimpleTeleportConfig struct {
 	Proxy telecfg.Proxy `yaml:"proxy_service" json:"proxy_service"`
 }
 
-// OpsCenterConfigParams contain parameters for Ops Center config generation
+// OpsCenterConfigParams contains parameters for Ops Center config generation
 type OpsCenterConfigParams struct {
 	// AdvertiseAddr is the Ops Center advertise addr
 	AdvertiseAddr string

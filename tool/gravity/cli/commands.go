@@ -1331,7 +1331,7 @@ type UsersInviteCmd struct {
 	TTL *time.Duration
 }
 
-// UserResetCmd generates a user password reset link
+// UsersResetCmd generates a user password reset link
 type UsersResetCmd struct {
 	*kingpin.CmdClause
 	// Name is user name

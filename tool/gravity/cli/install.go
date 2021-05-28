@@ -256,7 +256,7 @@ func restartInstallOrJoin(env *localenv.LocalEnvironment) error {
 	err = InstallerClient(env, installerclient.Config{
 		ConnectStrategy: strategy,
 		Lifecycle: &installerclient.AutomaticLifecycle{
-			Aborter:            installerAbortOperation(strategy.ServiceName, env),
+			Aborter:            installerAbortOperation(strategy.ServiceName),
 			Completer:          InstallerCompleteOperation(strategy.ServiceName, env),
 			DebugReportPath:    DebugReportPath(),
 			LocalDebugReporter: InstallerGenerateLocalReport(env),
@@ -448,7 +448,7 @@ func autojoin(env *localenv.LocalEnvironment, environ LocalEnvironmentFactory, c
 	err = joinClient(env, installerclient.Config{
 		ConnectStrategy: strategy,
 		Lifecycle: &installerclient.AutomaticLifecycle{
-			Aborter:   installerAbortOperation(strategy.ServiceName, env),
+			Aborter:   installerAbortOperation(strategy.ServiceName),
 			Completer: InstallerCompleteOperation(strategy.ServiceName, env),
 		},
 	})
@@ -538,7 +538,7 @@ func agent(env *localenv.LocalEnvironment, config agentConfig) error {
 	}
 
 	interrupt.AddStopper(agent)
-	watchReconnects(ctx, cancel, watchCh)
+	watchReconnects(cancel, watchCh)
 
 	return trace.Wrap(agent.Serve())
 }
@@ -645,7 +645,7 @@ func executePhaseFromService(
 	}
 	if params.isResume() {
 		config.Lifecycle = &installerclient.AutomaticLifecycle{
-			Aborter:            installerAbortOperation(strategy.ServiceName, env),
+			Aborter:            installerAbortOperation(strategy.ServiceName),
 			Completer:          InstallerCompleteOperation(strategy.ServiceName, env),
 			DebugReportPath:    DebugReportPath(),
 			LocalDebugReporter: InstallerGenerateLocalReport(env),
@@ -762,7 +762,7 @@ func join(env *localenv.LocalEnvironment, environ LocalEnvironmentFactory, confi
 	err = joinClient(env, installerclient.Config{
 		ConnectStrategy: strategy,
 		Lifecycle: &installerclient.AutomaticLifecycle{
-			Aborter:            installerAbortOperation(strategy.ServiceName, env),
+			Aborter:            installerAbortOperation(strategy.ServiceName),
 			Completer:          InstallerCompleteOperation(strategy.ServiceName, env),
 			DebugReportPath:    DebugReportPath(),
 			LocalDebugReporter: InstallerGenerateLocalReport(env),

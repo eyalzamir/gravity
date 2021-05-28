@@ -48,7 +48,7 @@ func (r *S) TestRequiresCert(c *C) {
 
 func (r *S) TestClientExecutesCommandsRemotely(c *C) {
 	creds := TestCredentials(c)
-	cmd := testCommand{"server output"}
+	cmd := TestCommand{"server output"}
 	log := r.WithField("test", "ClientExecutesCommandsRemotely")
 	listener := listen(c)
 	srv, err := New(Config{
@@ -361,7 +361,7 @@ func (r *S) clientExecutesCommandsWithClient(c *C, clt client.Client, srv *agent
 func (r *S) newPeer(c *C, config PeerConfig, serverAddr string, log log.FieldLogger) *PeerServer {
 	config.FieldLogger = log.WithField("peer", config.Listener.Addr())
 	return NewTestPeer(c, config, serverAddr,
-		testCommand{"test output"}, TestSystemInfo{},
+		TestCommand{"test output"}, TestSystemInfo{},
 	)
 }
 

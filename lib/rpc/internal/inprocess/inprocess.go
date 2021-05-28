@@ -26,11 +26,10 @@ import (
 
 // Listen creates an in-process listener
 func Listen() *listener {
-	l := &listener{
+	return &listener{
 		doneCh: make(chan struct{}),
 		connCh: make(chan net.Conn, 1),
 	}
-	return l
 }
 
 // Listener is the inprocess listener
@@ -66,7 +65,7 @@ func (r *listener) Accept() (net.Conn, error) {
 // Close closes the listener.
 // Any blocked Accept operations will be unblocked and return errors.
 func (r *listener) Close() error {
-	r.Once.Do(func() {
+	r.once.Do(func() {
 		close(r.doneCh)
 	})
 	return nil
@@ -78,7 +77,7 @@ func (r *listener) Addr() net.Addr {
 }
 
 type listener struct {
-	sync.Once
+	once   sync.Once
 	doneCh chan struct{}
 	connCh chan net.Conn
 }

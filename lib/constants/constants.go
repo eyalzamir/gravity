@@ -271,7 +271,7 @@ const (
 	OpsCenterKeyPair = "ops"
 	// PlanetRPCKeyPair is a keypair for planet's RPC client for
 	// satellite monitoring and exchange
-	PlanetRpcKeyPair = "planet-rpc-client"
+	PlanetRPCKeyPair = "planet-rpc-client"
 	// CoreDNSKeyPair is a cert/key used for accessing coredns related configmap from the kubernetes api
 	CoreDNSKeyPair = "coredns"
 	// FrontProxyClientKeyPair is a cert/key used for accessing external APIs through aggregation layer
@@ -497,15 +497,6 @@ const (
 	// RoleOneTimeLink is a role for one-time link installation
 	RoleOneTimeLink = "@onetimelink"
 
-	// WebSessionContext is for web sessions stored in the current context
-	WebSessionContext = "telekube.web_session.context"
-
-	// OperatorContext is for operator associated with User ACL context
-	OperatorContext = "telekube.operator.context"
-
-	// UserContext is a context field that contains authenticated user name
-	UserContext = "user.context"
-
 	// PrivilegedKubeconfig is a path to privileged kube config
 	// that is stored on K8s master node
 	PrivilegedKubeconfig = "/etc/kubernetes/scheduler.kubeconfig"
@@ -566,6 +557,7 @@ const (
 	ClusterFlavorEnv = "GRAVITY_CLUSTER_FLAVOR"
 
 	// SMTPSecret specifies the name of the Secret with cluster SMTP configuration
+	//nolint:gosec
 	SMTPSecret = "smtp-configuration-update"
 
 	// AlertTargetConfigMap specifies the name of the ConfigMap with alert target configuration
@@ -777,7 +769,7 @@ var (
 		DockerStorageDriverOverlay2,
 	}
 
-	// KubernetesServiceDomainName specifies the domain names of the kubernetes API service
+	// KubernetesServiceDomainNames specifies the domain names of the kubernetes API service
 	KubernetesServiceDomainNames = []string{
 		"kubernetes",
 		"kubernetes.default",
@@ -822,3 +814,16 @@ func (f *Format) Set(v string) error {
 func (f *Format) String() string {
 	return string(*f)
 }
+
+const (
+	// UserContext is a context field that contains authenticated user name
+	UserContext ContextKey = "user.context"
+
+	// WebSessionContext is for web sessions stored in the current context
+	WebSessionContext ContextKey = "telekube.web_session.context"
+
+	// OperatorContext is for operator associated with User ACL context
+	OperatorContext ContextKey = "telekube.operator.context"
+)
+
+type ContextKey string

@@ -137,12 +137,12 @@ func (r CheckPortsResponse) FailureCount() int {
 	var failures int
 	for _, listen := range r.Listen {
 		if listen.Code != 0 {
-			failures += 1
+			failures++
 		}
 	}
 	for _, ping := range r.Ping {
 		if ping.Code != 0 {
-			failures += 1
+			failures++
 		}
 	}
 	return failures
@@ -152,9 +152,8 @@ func (r CheckPortsResponse) FailureCount() int {
 func (r ServerResult) Result() string {
 	if r.Code == 0 {
 		return fmt.Sprintf("success from %v", r.Server.Address())
-	} else {
-		return fmt.Sprintf("failure(code:%v) from %v: %v", r.Code, r.Server.Address(), r.Error)
 	}
+	return fmt.Sprintf("failure(code:%v) from %v: %v", r.Code, r.Server.Address(), r.Error)
 }
 
 // DurationFromProto returns a time.Duration from the given protobuf value

@@ -355,6 +355,7 @@ func (m Manifest) RuntimeImages() (images []string) {
 }
 
 // AllPackageDependencies returns the list of all available package dependencies
+//nolint:stylecheck // TODO: receiver names 'in' (in auto-generated code) vs 'm'
 func (m Manifest) AllPackageDependencies() (deps []loc.Locator) {
 	if m.SystemOptions != nil && m.SystemOptions.Dependencies.Runtime != nil {
 		deps = append(deps, m.SystemOptions.Dependencies.Runtime.Locator)
@@ -509,6 +510,7 @@ type Dependencies struct {
 }
 
 // ByName returns a dependency package locator by its name
+//nolint:stylecheck // TODO: receiver names 'in' (in auto-generated code) vs 'd'
 func (d Dependencies) ByName(names ...string) (*loc.Locator, error) {
 	for _, dep := range append(d.Packages, d.Apps...) {
 		if utils.StringInSlice(names, dep.Locator.Name) {
@@ -901,6 +903,7 @@ type Volume struct {
 }
 
 // CheckAndSetDefaults checks and sets defaults
+//nolint:stylecheck // TODO: receiver names 'in' (in auto-generated code) vs 'v'
 func (v *Volume) CheckAndSetDefaults() error {
 	if v.UID != nil {
 		if *v.UID < 0 {

@@ -98,13 +98,13 @@ func (t *TokenV2) SetExpiry(expires time.Time) {
 }
 
 // Expires returns token expiration time
-func (r *TokenV2) Expiry() time.Time {
-	return r.Metadata.Expiry()
+func (t *TokenV2) Expiry() time.Time {
+	return t.Metadata.Expiry()
 }
 
 // SetTTL sets Expires header using realtime clock
-func (r *TokenV2) SetTTL(clock clockwork.Clock, ttl time.Duration) {
-	r.Metadata.SetTTL(clock, ttl)
+func (t *TokenV2) SetTTL(clock clockwork.Clock, ttl time.Duration) {
+	t.Metadata.SetTTL(clock, ttl)
 }
 
 // SetUser sets token user
@@ -196,6 +196,7 @@ type TokenSpecV2 struct {
 }
 
 // TokenV2Schema is JSON schema for server
+//nolint:gosec // not a real secret
 const TokenSpecV2Schema = `{
   "type": "object",
   "additionalProperties": false,

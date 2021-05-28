@@ -31,6 +31,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/backoff"
 	"google.golang.org/grpc/credentials"
 )
 
@@ -77,8 +78,13 @@ type Config struct {
 // note that if connection is unavailable, it will try to establish it
 // until context provided expires
 func New(ctx context.Context, config Config) (*client, error) {
+	bc := backoff.DefaultConfig
+	bc.MaxDelay = defaults.RPCAgentBackoffThreshold
 	opts := []grpc.DialOption{
-		grpc.WithBackoffMaxDelay(defaults.RPCAgentBackoffThreshold),
+		// See https://github.com/grpc/grpc-go/issues/4461
+		grpc.WithConnectParams(grpc.ConnectParams{
+			Backoff: bc,
+		}),
 		grpc.WithBlock(),
 		grpc.WithTransportCredentials(config.Credentials),
 	}

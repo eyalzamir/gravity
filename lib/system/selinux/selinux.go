@@ -110,22 +110,3 @@ func importLocalChangesFromReader(ctx context.Context, r io.Reader) error {
 	cmd.Stderr = w
 	return trace.Wrap(cmd.Run())
 }
-
-// nolint:deadcode,unused
-func removePolicy() error {
-	// Leave the container policy module in-place as we might not be
-	// the only client
-	return removePolicyByName("gravity")
-}
-
-// nolint:deadcode,unused
-func removePolicyByName(module string) error {
-	logger := liblog.New(log.WithField(trace.Component, "selinux"))
-	logger.WithField("module", module).Info("Remove policy module.")
-	cmd := exec.Command("semodule", "--remove", module)
-	w := logger.Writer()
-	defer w.Close()
-	cmd.Stdout = w
-	cmd.Stderr = w
-	return trace.Wrap(cmd.Run())
-}

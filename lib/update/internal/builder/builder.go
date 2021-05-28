@@ -110,9 +110,7 @@ func (p *Phase) AddWithDependency(dep *Phase, subs ...*Phase) {
 
 // Required adds the specified phases reqs as requirements for this phase
 func (p *Phase) Require(reqs ...*Phase) *Phase {
-	for _, req := range reqs {
-		p.requires = append(p.requires, req)
-	}
+	p.requires = append(p.requires, reqs...)
 	return p
 }
 

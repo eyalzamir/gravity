@@ -33,9 +33,7 @@ import (
 
 // New creates a new journal log directory vacuum cleaner
 func New(config Config) (*cleanup, error) {
-	if err := config.checkAndSetDefaults(); err != nil {
-		return nil, trace.Wrap(err)
-	}
+	config.setDefaults()
 
 	f, err := os.Open(config.MachineIDFile)
 	if err != nil {
@@ -60,7 +58,7 @@ func New(config Config) (*cleanup, error) {
 	}, nil
 }
 
-func (r *Config) checkAndSetDefaults() error {
+func (r *Config) setDefaults() {
 	if r.MachineIDFile == "" {
 		r.MachineIDFile = defaults.SystemdMachineIDFile
 	}
@@ -70,7 +68,6 @@ func (r *Config) checkAndSetDefaults() error {
 	if r.FieldLogger == nil {
 		r.FieldLogger = log.WithField(trace.Component, "gc:journal")
 	}
-	return nil
 }
 
 // Config defines the configuration for the cleaner of obsolete journal
@@ -125,6 +122,7 @@ func (r *cleanup) Prune(context.Context) (err error) {
 	return nil
 }
 
+//nolint:goprintffuncname
 func (r *cleanup) printStep(format string, args ...interface{}) {
 	if r.DryRun {
 		format = "[dry-run] " + format

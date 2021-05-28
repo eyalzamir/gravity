@@ -480,7 +480,6 @@ func convertErr(e error) error {
 }
 
 func isDir(n *client.Node) bool {
-	//nolint:gosimple
 	return n != nil && n.Dir == true
 }
 
@@ -593,6 +592,7 @@ func (r retryApi) retry(ctx context.Context, fn apiCall) (resp *client.Response,
 
 type apiCall func() (*client.Response, error)
 
+// nolint:stylecheck
 type retryApi struct {
 	api      client.KeysAPI
 	interval time.Duration

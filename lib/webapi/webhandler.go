@@ -502,7 +502,7 @@ func (h *WebHandler) tryLoginWithToken(w http.ResponseWriter, r *http.Request) (
 	return token, nil
 }
 
-func (h *WebHandler) getToken(w http.ResponseWriter, r *http.Request) (tokenID string, err error) {
+func (h *WebHandler) getToken(_ http.ResponseWriter, r *http.Request) (tokenID string, err error) {
 	if h.cfg.Wizard {
 		// Look up a token by user ID
 		token, err := h.cfg.Identity.GetInstallTokenByUser(defaults.WizardUser)
@@ -563,7 +563,7 @@ func (h *WebHandler) authenticate(w http.ResponseWriter, r *http.Request) (*sess
 }
 
 // loginWithToken logs in the user linked to token specified with tokenID
-func (h *WebHandler) loginWithToken(tokenID string, w http.ResponseWriter, r *http.Request) (*storage.InstallToken, error) {
+func (h *WebHandler) loginWithToken(tokenID string, w http.ResponseWriter, _ *http.Request) (*storage.InstallToken, error) {
 	log.Debugf("logging in with token %v", tokenID)
 	token, err := h.cfg.Identity.GetInstallToken(tokenID)
 	if err != nil {

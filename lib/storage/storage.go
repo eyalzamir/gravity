@@ -645,7 +645,7 @@ func (s *ClusterState) ClusterNodeSpec() []ClusterNodeSpecV2 {
 				InstanceType: server.InstanceType,
 			}
 		} else {
-			spec.Count += 1
+			spec.Count++
 			mapping[key] = spec
 		}
 	}
@@ -813,7 +813,7 @@ func (a *AppProgressEntry) Check() error {
 	return nil
 }
 
-// AppProgressEntries collection stores progress entries for the appication operations
+// AppProgressEntries collection stores progress entries for the application operations
 type AppProgressEntries interface {
 	// CreateAppProgressEntry adds a progress entry for the specified application
 	CreateAppProgressEntry(p AppProgressEntry) (*AppProgressEntry, error)
@@ -1028,10 +1028,10 @@ type Permissions interface {
 	DeletePermissionsForUser(email string) error
 }
 
-func (r Permission) String() string {
+func (p Permission) String() string {
 	return fmt.Sprintf(
 		"permission(email=%v, action=%v, collection=%v:%v)",
-		r.UserEmail, r.Action, r.Collection, r.CollectionID)
+		p.UserEmail, p.Action, p.Collection, p.CollectionID)
 }
 
 // LoginEntry represents local agent login with remote portal,
@@ -1940,10 +1940,10 @@ type DockerConfig struct {
 }
 
 // Check makes sure the docker config is correct
-func (d DockerConfig) Check() error {
-	if d.StorageDriver != "" && !utils.StringInSlice(constants.DockerSupportedDrivers, d.StorageDriver) {
+func (r DockerConfig) Check() error {
+	if r.StorageDriver != "" && !utils.StringInSlice(constants.DockerSupportedDrivers, r.StorageDriver) {
 		return trace.BadParameter("unrecognized docker storage driver %q, supported are: %v",
-			d.StorageDriver, constants.DockerSupportedDrivers)
+			r.StorageDriver, constants.DockerSupportedDrivers)
 	}
 	return nil
 }
@@ -1984,7 +1984,7 @@ type AWSVariables struct {
 	KeyPair string `json:"key_pair"`
 }
 
-// SetDefaults fills in some unset fiels with their default values if they have them
+// SetDefaults fills in some unset fields with their default values if they have them
 func (v *AWSVariables) SetDefaults() {
 	if v.Region == "" {
 		v.Region = defaults.AWSRegion
@@ -2126,7 +2126,7 @@ type ShrinkOperationState struct {
 	// Force controls whether the operation ignores intermediate errors
 	Force bool `json:"force"`
 	// NodeRemoved indicates whether the node has already been removed from the cluster
-	// Used in cases where we recieve an event where the node is being terminated, but may
+	// Used in cases where we receive an event where the node is being terminated, but may
 	// not have disconnected from the cluster yet.
 	NodeRemoved bool `json:"node_removed"`
 }
