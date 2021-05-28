@@ -393,7 +393,7 @@ type InstallCmd struct {
 	// DNSPort overrides default DNS port for planet DNS.
 	DNSPort *int
 	// DockerStorageDriver specifies Docker storage driver to use
-	DockerStorageDriver *dockerStorageDriver
+	DockerStorageDriver *dockerStorageDriverValue
 	// DockerArgs specifies additional Docker arguments
 	DockerArgs *[]string
 	// ServiceUID is system user ID

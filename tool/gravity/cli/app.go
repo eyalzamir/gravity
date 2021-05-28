@@ -163,7 +163,7 @@ func importApp(env *localenv.LocalEnvironment, registryURL, dockerURL, source st
 	}
 	steps := 3
 	if req.Vendor {
-		steps += 1
+		steps++
 	}
 	progress := utils.NewProgress(context.TODO(), "app import", steps, silent)
 	defer progress.Stop()

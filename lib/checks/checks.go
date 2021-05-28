@@ -54,6 +54,7 @@ var log = logrus.WithField(trace.Component, "checks")
 // New creates a new checker for the specified list of servers using given
 // set of server information payloads and the specified interface for
 // running remote commands.
+//nolint:revive // TODO: export the return value type
 func New(config Config) (*checker, error) {
 	if err := config.check(); err != nil {
 		return nil, trace.Wrap(err)

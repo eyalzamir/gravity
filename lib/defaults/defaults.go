@@ -80,10 +80,13 @@ const (
 	// WaitForEventInterval indicates the delay between above attempts
 	WaitForEventInterval = 5 * time.Second
 
-	// Default retry settings
-	RetryInterval           = 5 * time.Second
-	RetryAttempts           = 100
-	RetryLessAttempts       = 20
+	// RetryInterval is the interval between retry attempts
+	RetryInterval = 5 * time.Second
+	// RetryAttempts is the total number of attempts
+	RetryAttempts = 100
+	// RetryLessAttempts is the total number of attempts in alternative retry scenarios
+	RetryLessAttempts = 20
+	// RetrySmallerMaxInterval is the total time for alternative retry scenario
 	RetrySmallerMaxInterval = RetryLessAttempts * RetryInterval
 
 	// EtcdRetryInterval is the retry interval for some etcd commands
@@ -281,7 +284,7 @@ const (
 	// SatelliteRPCAgentPort is port used by satellite agent to expose its status
 	SatelliteRPCAgentPort = 7575
 
-	// SatelliteRPCAgentPort is port used by satellite agent to expose metrics
+	// SatelliteMetricsPort is port used by satellite agent to expose metrics
 	SatelliteMetricsPort = 7580
 
 	// AlertmanagerServicePort is the Alertmanage service port
@@ -1341,9 +1344,9 @@ var (
 // HookSecurityContext returns default securityContext for hook pods
 func HookSecurityContext() *v1.PodSecurityContext {
 	var (
-		runAsNonRoot bool  = false
-		runAsUser    int64 = 0
-		fsGroup      int64 = 0
+		runAsNonRoot = false
+		runAsUser    int64
+		fsGroup      int64
 	)
 
 	return &v1.PodSecurityContext{

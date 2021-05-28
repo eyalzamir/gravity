@@ -155,7 +155,7 @@ func (r *InterruptHandler) Abort() {
 	r.cancel()
 }
 
-// Add adds stoppers to the internal termination loop
+// AddStopper adds stoppers to the internal termination loop
 func (r *InterruptHandler) AddStopper(stoppers ...Stopper) {
 	select {
 	case r.termC <- stoppers:

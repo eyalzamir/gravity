@@ -79,7 +79,7 @@ func (l *DockerImages) String() string {
 	return fmt.Sprintf("%v", []DockerImage(*l))
 }
 
-// ImagesSlices creates a collection of DockerImages from a kingpin command line argument.
+// ImagesSlice creates a collection of DockerImages from a kingpin command line argument.
 func ImagesSlice(s kingpin.Settings) *DockerImages {
 	var images DockerImages
 	s.SetValue(&images)

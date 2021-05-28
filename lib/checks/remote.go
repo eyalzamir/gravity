@@ -58,6 +58,7 @@ type ValidateConfig struct {
 }
 
 // NewRemote creates a remote node validator from the provided agents repository.
+//nolint:revive // TODO: export the return value type
 func NewRemote(agents rpc.AgentRepository) *remote {
 	return &remote{
 		AgentRepository: agents,

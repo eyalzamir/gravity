@@ -33,7 +33,7 @@ import (
 	"github.com/gravitational/trace"
 
 	"github.com/tstranex/u2f"
-	. "gopkg.in/check.v1"
+	. "gopkg.in/check.v1" //nolint:revive,stylecheck // TODO: tests will be rewritten to use testify
 )
 
 type CredsSuite struct {

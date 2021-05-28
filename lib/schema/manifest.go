@@ -1197,13 +1197,13 @@ type EncryptionExtension struct {
 	CACert string `json:"caCert,omitempty"`
 }
 
-// Logs allows to customize logs feature
+// LogsExtension allows to customize logs feature
 type LogsExtension struct {
 	// Disabled allows to disable Logs tab
 	Disabled bool `json:"disabled,omitempty"`
 }
 
-// Monitoring allows to customize monitoring feature
+// MonitoringExtension allows to customize monitoring feature
 type MonitoringExtension struct {
 	// Disabled allows to disable Monitoring tab
 	Disabled bool `json:"disabled,omitempty"`
@@ -1215,7 +1215,7 @@ type CatalogExtension struct {
 	Disabled bool `json:"disabled,omitempty"`
 }
 
-// Kubernetes allows to customize kubernetes feature
+// KubernetesExtension allows to customize kubernetes feature
 type KubernetesExtension struct {
 	// Disabled allows to disable Kubernetes tab
 	Disabled bool `json:"disabled,omitempty"`
@@ -1227,7 +1227,7 @@ type OpsCenterExtension struct {
 	Disabled bool `json:"disabled,omitempty"`
 }
 
-// Configuration allows to customize configuration feature
+// ConfigurationExtension allows to customize configuration feature
 type ConfigurationExtension struct {
 	// Disabled allows to disable Configuration tab
 	Disabled bool `json:"disabled,omitempty"`

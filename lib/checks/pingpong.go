@@ -46,7 +46,7 @@ const (
 	ModeBandwidth = "bandwidth"
 )
 
-// Checks makes sure the request is correct
+// Check makes sure the request is correct
 func (r PingPongRequest) Check() error {
 	if !utils.StringInSlice([]string{ModePingPong, ModeBandwidth}, r.Mode) {
 		return trace.BadParameter("unsupported mode %q", r.Mode)

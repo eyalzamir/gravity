@@ -58,7 +58,7 @@ func (i *Installer) NotifyOperationAvailable(op ops.SiteOperation) error {
 	return nil
 }
 
-// Returns a new cluster request
+// NewCluster returns a new cluster create request.
 // Implements engine.ClusterFactory
 func (i *Installer) NewCluster() ops.NewSiteRequest {
 	return i.config.ClusterFactory.NewCluster()

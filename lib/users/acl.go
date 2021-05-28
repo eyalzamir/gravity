@@ -1108,7 +1108,7 @@ func (i *IdentityACL) UpsertNode(server teleservices.Server) error {
 	return i.identity.UpsertNode(server)
 }
 
-// UpsertNode upserts multiple nodes
+// UpsertNodes upserts multiple nodes
 func (i *IdentityACL) UpsertNodes(namespace string, servers []teleservices.Server) error {
 	if err := i.checker.CheckAccessToRule(i.context(), namespace, teleservices.KindNode, teleservices.VerbCreate, false); err != nil {
 		return trace.Wrap(err)
@@ -1210,7 +1210,7 @@ func (i *IdentityACL) DeleteReverseTunnel(domainName string) error {
 	return i.identity.DeleteReverseTunnel(domainName)
 }
 
-// DeleteAllReverseTunnels
+// DeleteAllReverseTunnels removes all reverse tunnel values
 func (i *IdentityACL) DeleteAllReverseTunnels() error {
 	if err := i.checker.CheckAccessToRule(i.context(), teledefaults.Namespace, teleservices.KindReverseTunnel, teleservices.VerbDelete, false); err != nil {
 		return trace.Wrap(err)

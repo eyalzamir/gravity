@@ -535,8 +535,12 @@ func FindPreferredConnector(identity Identity) (teleservices.Resource, error) {
 }
 
 const (
-	ActionRead   = "read"
+	// ActionRead defines the action verb for read permission
+	ActionRead = "read"
+	// ActionCreate defines the action verb for create permission
 	ActionCreate = "create"
+	// ActionUpdate defines the action verb for update permission
 	ActionUpdate = "update"
+	// ActionDelete defines the action verb for delete permission
 	ActionDelete = "delete"
 )

@@ -530,9 +530,8 @@ func Execute(g *Application, cmd string, extraArgs []string) (err error) {
 		}
 		if *g.StatusClusterCmd.Seconds != 0 {
 			return statusPeriodic(localEnv, printOptions, *g.StatusClusterCmd.Seconds)
-		} else {
-			return status(localEnv, printOptions)
 		}
+		return status(localEnv, printOptions)
 	case g.StatusHistoryCmd.FullCommand():
 		return statusHistory()
 	case g.UpdateUploadCmd.FullCommand():

@@ -20,7 +20,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ApplyFileContests restores the file contexts in specified list of paths
+// ApplyFileContexts restores the file contexts in specified list of paths
 func ApplyFileContexts(ctx context.Context, out io.Writer, paths ...string) error {
 	args := []string{"-Rvi"}
 	args = append(args, paths...)

@@ -77,9 +77,9 @@ type Remote interface {
 
 // NewAgentRunner creates a new RemoteRunner that uses a cluster of agents
 // to run remote commands
-func NewAgentRunner(creds credentials.TransportCredentials) *agentRunner {
-	return &agentRunner{
-		FieldLogger: logrus.WithField(trace.Component, "fsm:remote"),
+func NewAgentRunner(creds credentials.TransportCredentials) *AgentRunner {
+	return &AgentRunner{
+		log: logrus.WithField(trace.Component, "fsm:remote"),
 		agentCache: &agentCache{
 			creds:   creds,
 			clients: make(map[string]rpcclient.Client),
@@ -89,8 +89,8 @@ func NewAgentRunner(creds credentials.TransportCredentials) *agentRunner {
 
 // Run executes a command on the remote server
 // Implements rpc.RemoteRunner
-func (r *agentRunner) Run(ctx context.Context, server storage.Server, args ...string) error {
-	logger := r.WithFields(logrus.Fields{
+func (r *AgentRunner) Run(ctx context.Context, server storage.Server, args ...string) error {
+	logger := r.log.WithFields(logrus.Fields{
 		"gravity": args,
 		"server":  serverName(server),
 	})
@@ -128,13 +128,13 @@ func (r *agentRunner) Run(ctx context.Context, server storage.Server, args ...st
 }
 
 // CanExecute verifies if it can execute remote commands on server
-func (r *agentRunner) CanExecute(ctx context.Context, server storage.Server) error {
+func (r *AgentRunner) CanExecute(ctx context.Context, server storage.Server) error {
 	_, err := r.GetClient(ctx, server.AdvertiseIP)
 	return trace.Wrap(err)
 }
 
-type agentRunner struct {
-	logrus.FieldLogger
+type AgentRunner struct {
+	log logrus.FieldLogger
 	// agentCache provides access to RPC agents
 	*agentCache
 }
@@ -170,9 +170,13 @@ func serverName(server storage.Server) string {
 type ExecutionCheck int
 
 const (
+	// CanRunLocally states that the task can run locally
 	CanRunLocally = ExecutionCheck(iota)
+	// CanRunRemotely states that the task can run remotely
 	CanRunRemotely
+	// ShouldRunRemotely states that the task should run remotely
 	ShouldRunRemotely
+	// ExecutionCheckUndefined signifies the unknown task execution mode
 	ExecutionCheckUndefined
 )
 

@@ -23,7 +23,7 @@ import (
 	"github.com/gravitational/gravity/lib/install/dispatcher/internal/test"
 	installpb "github.com/gravitational/gravity/lib/install/proto"
 
-	. "gopkg.in/check.v1"
+	. "gopkg.in/check.v1" //nolint:revive,stylecheck // TODO: tests will be rewritten to use testify
 )
 
 func TestDispatcher(t *testing.T) { TestingT(t) }

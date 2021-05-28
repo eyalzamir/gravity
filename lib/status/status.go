@@ -360,7 +360,7 @@ func (r ClusterOperationProgress) IsCompleted() bool {
 	return r.Completion == constants.Completed
 }
 
-// Progress describes the progress of an operation
+// ClusterOperationProgress describes the progress of an operation
 type ClusterOperationProgress struct {
 	// Message provides the free text associated with this entry
 	Message string `json:"message"`
@@ -440,7 +440,7 @@ const (
 	NodeHealthy = "healthy"
 	// NodeOffline is the status of an unreachable/unavailable node
 	NodeOffline = "offline"
-	// NodeDegraged is the status of a node with failed probes
+	// NodeDegraded is the status of a node with failed probes
 	NodeDegraded = "degraded"
 
 	// publicIPAddrTag is the name of the tag containing node IP

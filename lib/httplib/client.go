@@ -279,7 +279,7 @@ func LocalResolverDialer(dnsAddr string) Dialer {
 	}
 }
 
-// dial dials the specified address and returns a new connection
+// Dial dials the specified address and returns a new connection
 func Dial(ctx context.Context, network, addr string) (net.Conn, error) {
 	var d net.Dialer
 	return d.DialContext(ctx, network, addr)

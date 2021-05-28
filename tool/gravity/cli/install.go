@@ -287,7 +287,7 @@ func clientTerminationHandler(interrupt *signals.InterruptHandler, printer utils
 		select {
 		case sig := <-interrupt.C:
 			// Interrupt signaled
-			interrupts += 1
+			interrupts++
 			if interrupts > 1 {
 				printer.Println("Received", sig, "signal. Aborting the installer gracefully, please wait.")
 				interrupt.Abort()

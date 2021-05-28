@@ -1577,7 +1577,7 @@ func (u *UsersService) UpsertNode(server teleservices.Server) error {
 	return u.backend.UpsertNode(server)
 }
 
-// UpsertNode upserts multiple nodes
+// UpsertNodes upserts multiple nodes
 func (u *UsersService) UpsertNodes(namespace string, servers []teleservices.Server) error {
 	return u.backend.UpsertNodes(namespace, servers)
 }

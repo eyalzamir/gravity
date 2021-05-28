@@ -79,7 +79,7 @@ func (_ *S) TestTarGlobCanBeAborted(c *C) {
 
 	err = TarGlob(r, "resources", []string{"a.yaml"}, func(match string, file io.Reader) error {
 		matches = append(matches, match)
-		return Abort
+		return ErrAbort
 	})
 	c.Assert(err, IsNil)
 	c.Assert(matches, DeepEquals, []string{"a.yaml"})

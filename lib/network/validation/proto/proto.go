@@ -29,7 +29,7 @@ import (
 	"github.com/gravitational/trace"
 )
 
-// Checks makes sure the request is correct
+// Check makes sure the request is correct
 func (r CheckPortsRequest) Check() error {
 	if len(r.Listen) == 0 {
 		return trace.BadParameter("at least one listen address should be provided: %v", r)
@@ -49,7 +49,7 @@ func (r CheckPortsRequest) Check() error {
 	return nil
 }
 
-// Checks makes sure the request is correct
+// Check makes sure the request is correct
 func (r CheckBandwidthRequest) Check() error {
 	if len(r.Ping) < 1 {
 		return trace.BadParameter("at least one ping address should be provided: %v", r)

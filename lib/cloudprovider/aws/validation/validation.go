@@ -130,6 +130,7 @@ func validateWithContext(clientCtx *clientContext, probes Probes, validator reso
 	return actions, trace.NewAggregate(errors...)
 }
 
+// AllProbes lists all validation probes
 var AllProbes Probes
 
 // ActionDependencies assigns an action a set of dependent action permissions.

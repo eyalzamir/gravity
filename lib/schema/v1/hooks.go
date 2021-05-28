@@ -17,7 +17,7 @@ limitations under the License.
 package v1
 
 import (
-	"k8s.io/api/batch/v1"
+	v1 "k8s.io/api/batch/v1"
 )
 
 // Hooks defines a set of application lifecycle hooks in effect
@@ -81,7 +81,7 @@ func (h Hooks) AllHooks() []*HooksBase {
 	return result
 }
 
-// HookBase defines a hook as either a shell script run in the context
+// HooksBase defines a hook as either a shell script run in the context
 // of the automatically created job or the raw job spec
 type HooksBase struct {
 	// Type denotes the type of this hook

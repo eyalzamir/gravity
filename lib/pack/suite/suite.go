@@ -32,7 +32,7 @@ import (
 	"github.com/gravitational/trace"
 
 	"github.com/mailgun/timetools"
-	. "gopkg.in/check.v1"
+	. "gopkg.in/check.v1" //nolint:revive,stylecheck // TODO: tests will be rewritten to use testify
 )
 
 // PackageSuite containts acceptance tests for package services

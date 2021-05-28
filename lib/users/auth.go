@@ -72,6 +72,7 @@ type authenticator struct {
 }
 
 // NewAuthenticator returns a new authenticator instance.
+//nolint:revive // TODO: export the return value type
 func NewAuthenticator(config AuthenticatorConfig) (*authenticator, error) {
 	if err := config.Check(); err != nil {
 		return nil, trace.Wrap(err)
@@ -83,6 +84,7 @@ func NewAuthenticator(config AuthenticatorConfig) (*authenticator, error) {
 }
 
 // NewAuthenticatorFromIdentity creates a new authenticator from the provided identity.
+//nolint:revive // TODO: export the return value type
 func NewAuthenticatorFromIdentity(identity Identity) *authenticator {
 	return &authenticator{
 		AuthenticatorConfig: AuthenticatorConfig{
