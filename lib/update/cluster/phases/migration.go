@@ -50,7 +50,7 @@ type phaseMigrateLinks struct {
 }
 
 // NewPhaseMigrateLinks returns a new links migration executor
-func NewPhaseMigrateLinks(plan storage.OperationPlan, backend storage.Backend, logger log.FieldLogger) (*phaseMigrateLinks, error) {
+func NewPhaseMigrateLinks(plan storage.OperationPlan, backend storage.Backend, logger log.FieldLogger) (fsm.PhaseExecutor, error) {
 	return &phaseMigrateLinks{
 		FieldLogger: logger,
 		Backend:     backend,
@@ -164,7 +164,7 @@ type phaseUpdateLabels struct {
 }
 
 // NewPhaseUpdateLabels updates labels during an upgrade
-func NewPhaseUpdateLabels(plan storage.OperationPlan, client *kubernetes.Clientset, logger log.FieldLogger) (*phaseUpdateLabels, error) {
+func NewPhaseUpdateLabels(plan storage.OperationPlan, client *kubernetes.Clientset, logger log.FieldLogger) (fsm.PhaseExecutor, error) {
 	return &phaseUpdateLabels{
 		FieldLogger: logger,
 		Servers:     plan.Servers,
@@ -220,7 +220,7 @@ type phaseMigrateRoles struct {
 }
 
 // NewPhaseMigrateRoles returns a new roles migration executor
-func NewPhaseMigrateRoles(plan storage.OperationPlan, backend storage.Backend, logger log.FieldLogger) (*phaseMigrateRoles, error) {
+func NewPhaseMigrateRoles(plan storage.OperationPlan, backend storage.Backend, logger log.FieldLogger) (fsm.PhaseExecutor, error) {
 	return &phaseMigrateRoles{
 		FieldLogger:      logger,
 		Backend:          backend,

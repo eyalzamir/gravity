@@ -206,7 +206,7 @@ func (*PhaseUpgradeEtcd) PostCheck(context.Context) error {
 	return nil
 }
 
-// PhaseUpgradeRestore restores etcd data from backup, if it was wiped by the upgrade stage
+// PhaseUpgradeEtcdRestore restores etcd data from backup, if it was wiped by the upgrade stage
 type PhaseUpgradeEtcdRestore struct {
 	log.FieldLogger
 	Server storage.Server

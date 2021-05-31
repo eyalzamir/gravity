@@ -37,7 +37,7 @@ import (
 )
 
 // NewTaint returns an executor for adding a taint to a node
-func NewTaint(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (*tainter, error) {
+func NewTaint(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (libfsm.PhaseExecutor, error) {
 	op, err := newKubernetesOperation(params, client, logger)
 	if err != nil {
 		return nil, trace.Wrap(err)
@@ -65,7 +65,7 @@ func (p *tainter) Rollback(ctx context.Context) error {
 }
 
 // NewUntaint returns a new executor for removing a taint from a node
-func NewUntaint(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (*untainter, error) {
+func NewUntaint(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (libfsm.PhaseExecutor, error) {
 	op, err := newKubernetesOperation(params, client, logger)
 	if err != nil {
 		return nil, trace.Wrap(err)
@@ -92,7 +92,7 @@ func (*untainter) Rollback(context.Context) error {
 }
 
 // NewDrain returns a new executor for draining a node
-func NewDrain(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (*drainer, error) {
+func NewDrain(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (libfsm.PhaseExecutor, error) {
 	op, err := newKubernetesOperation(params, client, logger)
 	if err != nil {
 		return nil, trace.Wrap(err)
@@ -117,7 +117,7 @@ func (p *drainer) Rollback(ctx context.Context) error {
 }
 
 // NewUncordon returns a new executor for uncordoning a node
-func NewUncordon(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (*uncordoner, error) {
+func NewUncordon(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (libfsm.PhaseExecutor, error) {
 	op, err := newKubernetesOperation(params, client, logger)
 	if err != nil {
 		return nil, trace.Wrap(err)
@@ -141,7 +141,7 @@ func (*uncordoner) Rollback(context.Context) error {
 
 // NewEndpoints returns a new executor for waiting for cluster controller endpoints
 // to become active
-func NewEndpoints(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (*endpoints, error) {
+func NewEndpoints(params libfsm.ExecutorParams, client *kubeapi.Clientset, logger log.FieldLogger) (libfsm.PhaseExecutor, error) {
 	op, err := newKubernetesOperation(params, client, logger)
 	if err != nil {
 		return nil, trace.Wrap(err)

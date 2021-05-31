@@ -29,7 +29,7 @@ import (
 )
 
 // NewGarbageCollectPhase returns a new executor for the garbage collection phase
-func NewGarbageCollectPhase(p fsm.ExecutorParams, remote fsm.Remote, logger log.FieldLogger) (*phaseGC, error) {
+func NewGarbageCollectPhase(p fsm.ExecutorParams, remote fsm.Remote, logger log.FieldLogger) (fsm.PhaseExecutor, error) {
 	return &phaseGC{
 		FieldLogger: logger,
 		Server:      *p.Phase.Data.Server,

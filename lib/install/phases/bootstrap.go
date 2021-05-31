@@ -45,7 +45,7 @@ import (
 
 // NewBootstrap returns a new "bootstrap" phase executor
 func NewBootstrap(p fsm.ExecutorParams, operator ops.Operator, apps app.Applications, backend storage.Backend,
-	remote fsm.Remote) (*bootstrapExecutor, error) {
+	remote fsm.Remote) (fsm.PhaseExecutor, error) {
 	if p.Phase.Data == nil || p.Phase.Data.ServiceUser == nil {
 		return nil, trace.BadParameter("service user is required: %#v", p.Phase.Data)
 	}
