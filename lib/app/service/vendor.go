@@ -65,9 +65,9 @@ type VendorerConfig struct {
 }
 
 // NewVendorer creates a new vendorer instance.
-func NewVendorer(config VendorerConfig) (*vendorer, error) {
+func NewVendorer(config VendorerConfig) (*Vendorer, error) {
 	dockerPuller := docker.NewDockerPuller(config.DockerClient)
-	v := &vendorer{
+	v := &Vendorer{
 		dockerClient: config.DockerClient,
 		imageService: config.ImageService,
 		dockerPuller: dockerPuller,
@@ -75,16 +75,6 @@ func NewVendorer(config VendorerConfig) (*vendorer, error) {
 		packages:     config.Packages,
 	}
 	return v, nil
-}
-
-// Vendorer is an interface for interacting with the vendoring helper.
-type Vendorer interface {
-	// VendorDir takes information from an app vendor request, imports missing docker images if necessary,
-	// rewrites image names in the app's resources and returns a path to the directory containing ready
-	// to be imported app.
-	VendorDir(ctx context.Context, dir string, req VendorRequest) error
-	// VendorTarball is the same as VendorDir but accepts a tarball stream and unpacks it before vendoring
-	VendorTarball(ctx context.Context, tarball io.ReadCloser, req VendorRequest) (string, error)
 }
 
 // VendorRequest combined various vendoring options
@@ -125,9 +115,9 @@ type VendorRequest struct {
 	Pull bool
 }
 
-// vendorer is a helper struct that encapsulates all services needed to vendor/rewrite images in
+// Vendorer is a helper struct that encapsulates all services needed to vendor/rewrite images in
 // the application being imported.
-type vendorer struct {
+type Vendorer struct {
 	dockerClient docker.DockerInterface
 	imageService docker.ImageService
 	dockerPuller docker.DockerPuller
@@ -138,7 +128,7 @@ type vendorer struct {
 // VendorTarball is the same as VendorDir but accepts a tarball stream and unpacks it before vendoring.
 //
 // It is the caller's responsibility to delete the temporary directory containing the vendored app.
-func (v *vendorer) VendorTarball(ctx context.Context, tarball io.ReadCloser, req VendorRequest) (string, error) {
+func (v *Vendorer) VendorTarball(ctx context.Context, tarball io.ReadCloser, req VendorRequest) (string, error) {
 	unpackedDir, err := ioutil.TempDir(os.TempDir(), "gravity-import")
 	if err != nil {
 		return "", trace.Wrap(err)
@@ -156,7 +146,7 @@ func (v *vendorer) VendorTarball(ctx context.Context, tarball io.ReadCloser, req
 //
 // It will detect and import missing docker images and rewrite image references in all resource files
 // to point to a fixed docker registry address.
-func (v *vendorer) VendorDir(ctx context.Context, unpackedDir string, req VendorRequest) error {
+func (v *Vendorer) VendorDir(ctx context.Context, unpackedDir string, req VendorRequest) error {
 	if req.ProgressReporter == nil {
 		req.ProgressReporter = utils.DiscardProgress
 	}
@@ -177,7 +167,9 @@ func (v *vendorer) VendorDir(ctx context.Context, unpackedDir string, req Vendor
 	// first, rewrite all "multi-source" values that might refer to files and replace them
 	// with literal values, since some of them may also contain docker image references
 	// and generate overlay network jobs
-	err = resourceFiles.RewriteManifest(makeRewriteMultiSourceFunc(req.ManifestPath), makeRewriteWormholeJobFunc())
+	err = resourceFiles.RewriteManifest(ctx,
+		makeRewriteMultiSourceFunc(req.ManifestPath),
+		makeRewriteWormholeJobFunc())
 	if err != nil {
 		return trace.Wrap(err)
 	}
@@ -225,7 +217,7 @@ func (v *vendorer) VendorDir(ctx context.Context, unpackedDir string, req Vendor
 		manifestRewrites = append(manifestRewrites, fetchRuntimeImages(&runtimeImages))
 	}
 
-	err = resourceFiles.RewriteManifest(manifestRewrites...)
+	err = resourceFiles.RewriteManifest(ctx, manifestRewrites...)
 	if err != nil {
 		return trace.Wrap(err)
 	}
@@ -262,7 +254,7 @@ func (v *vendorer) VendorDir(ctx context.Context, unpackedDir string, req Vendor
 	}
 
 	if req.VendorRuntime {
-		err = resourceFiles.RewriteManifest(v.translateRuntimeImages)
+		err = resourceFiles.RewriteManifest(ctx, v.translateRuntimeImages)
 		if err != nil {
 			return trace.Wrap(err)
 		}
@@ -379,7 +371,7 @@ func printResourceStatus(resourceFile resources.ResourceFile, req VendorRequest)
 // pullAndExportImages pulls the docker images of all referenced container images (if not yet
 // present locally), pushes them into an instance of a private docker registry and then
 // dumps the contents of this private registry into the specified directory
-func (v *vendorer) pullAndExportImages(ctx context.Context, images []string, exportDir string, parallel int, progress utils.Progress) error {
+func (v *Vendorer) pullAndExportImages(ctx context.Context, images []string, exportDir string, parallel int, progress utils.Progress) error {
 	resourcesDir := filepath.Join(exportDir, "resources")
 	if err := os.MkdirAll(resourcesDir, defaults.PrivateDirMask); err != nil {
 		return trace.Wrap(trace.ConvertSystemError(err),
@@ -404,7 +396,7 @@ func (v *vendorer) pullAndExportImages(ctx context.Context, images []string, exp
 	return nil
 }
 
-func (v *vendorer) translateRuntimeImages(m *schema.Manifest) error {
+func (v *Vendorer) translateRuntimeImages(ctx context.Context, m *schema.Manifest) error {
 	if m.SystemOptions != nil && m.SystemOptions.BaseImage != "" {
 		_, tag, err := parseImageNameTag(m.SystemOptions.BaseImage)
 		if err != nil {
@@ -550,7 +542,7 @@ func makeRewriteSetImagesFunc(setImages []loc.DockerImage) rewriteFunc {
 
 // makeRewriteAppMetadataFunc returns a function to rewrite application metadata: repository, name or version
 func makeRewriteAppMetadataFunc(setRepository, setName, setVersion string) resources.ManifestRewriteFunc {
-	return func(m *schema.Manifest) error {
+	return func(ctx context.Context, m *schema.Manifest) error {
 		if setRepository != "" {
 			m.Metadata.Repository = setRepository
 		}
@@ -568,13 +560,13 @@ func makeRewriteAppMetadataFunc(setRepository, setName, setVersion string) resou
 // makeRewriteMultiSourceFunc returns a function that rewrites "multi-source" values in manifest
 // with their literal values
 func makeRewriteMultiSourceFunc(manifestPath string) resources.ManifestRewriteFunc {
-	return func(m *schema.Manifest) error {
-		return trace.Wrap(schema.ProcessMultiSourceValues(m, manifestPath))
+	return func(ctx context.Context, m *schema.Manifest) error {
+		return trace.Wrap(schema.ProcessMultiSourceValues(ctx, m, manifestPath))
 	}
 }
 
 func makeRewriteWormholeJobFunc() resources.ManifestRewriteFunc {
-	return func(m *schema.Manifest) error {
+	return func(ctx context.Context, m *schema.Manifest) error {
 		if m.Providers != nil && m.Providers.Generic.Networking.Type == constants.WireguardNetworkType {
 			if m.Hooks == nil {
 				m.Hooks = &schema.Hooks{}
@@ -656,7 +648,7 @@ func makeRewriteDepsFunc(setPackages []loc.Locator) resources.ManifestRewriteFun
 		}
 		return l
 	}
-	return func(m *schema.Manifest) error {
+	return func(ctx context.Context, m *schema.Manifest) error {
 		for i := range m.Dependencies.Packages {
 			m.Dependencies.Packages[i].Locator = rewrite(m.Dependencies.Packages[i].Locator)
 		}
@@ -678,7 +670,7 @@ func makeRewriteDepsFunc(setPackages []loc.Locator) resources.ManifestRewriteFun
 // makeRewritePackagesMetadataFunc returns a function that processes metadata for the app's dependency
 // packages (base, packages, apps) and rewrites versions accordingly
 func makeRewritePackagesMetadataFunc(packages pack.PackageService) resources.ManifestRewriteFunc {
-	return func(m *schema.Manifest) error {
+	return func(ctx context.Context, m *schema.Manifest) error {
 		base := m.Base()
 		if base != nil {
 			newLoc, err := pack.ProcessMetadata(packages, base)
@@ -709,7 +701,7 @@ func makeRewritePackagesMetadataFunc(packages pack.PackageService) resources.Man
 }
 
 func fetchRuntimeImages(images *[]string) resources.ManifestRewriteFunc {
-	return func(m *schema.Manifest) error {
+	return func(ctx context.Context, m *schema.Manifest) error {
 		*images = m.RuntimeImages()
 		return nil
 	}
@@ -817,5 +809,5 @@ func resourcesFromPath(root string, req VendorRequest) (result resources.Resourc
 	if err != nil {
 		return nil, nil, trace.Wrap(err)
 	}
-	return
+	return result, chartResources, nil
 }

@@ -49,7 +49,7 @@ import (
 	"github.com/gravitational/rigging"
 	"github.com/gravitational/trace"
 	log "github.com/sirupsen/logrus"
-	. "gopkg.in/check.v1"
+	. "gopkg.in/check.v1" // nolint:revive,stylecheck // tests will be rewritten to use testify
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/repo"
 	batchv1 "k8s.io/api/batch/v1"
@@ -766,7 +766,7 @@ func writer(in io.Writer) io.Writer {
 	return in
 }
 
-func (r *AppsSuite) importApplicationWithResources(apps app.Applications, vendorer service.Vendorer, manifestBytes string, resources []*archive.Item, c *C) (*app.Application, io.ReadCloser) {
+func (r *AppsSuite) importApplicationWithResources(apps app.Applications, vendorer vendorer, manifestBytes string, resources []*archive.Item, c *C) (*app.Application, io.ReadCloser) {
 	locator := loc.MustParseLocator("gravitational.io/app:0.0.1")
 	manifest, err := schema.ParseManifestYAML([]byte(manifestBytes))
 	c.Assert(err, IsNil)
@@ -831,7 +831,7 @@ func (r *AppsSuite) importApplicationWithResources(apps app.Applications, vendor
 	application.PackageEnvelope.SizeBytes = importedApplication.PackageEnvelope.SizeBytes
 	application.PackageEnvelope.SHA512 = importedApplication.PackageEnvelope.SHA512
 	application.PackageEnvelope.Created = importedApplication.PackageEnvelope.Created
-	// As the manifest is rewritten during import we cannot rely on textual comparision
+	// As the manifest is rewritten during import we cannot rely on textual comparison
 	// TODO: this step requires a call to resolveManifest to update manifest
 	// importedManifest, err := schema.ParseManifestYAML([]byte(importedApplication.PackageEnvelope.Manifest))
 	// c.Assert(importedApplication.Manifest, DeepEquals, manifest)
@@ -845,7 +845,7 @@ func (r *AppsSuite) importApplicationWithResources(apps app.Applications, vendor
 	return importedApplication, reader
 }
 
-func (r *AppsSuite) importApplication(apps app.Applications, vendorer service.Vendorer, c *C) *app.Application {
+func (r *AppsSuite) importApplication(apps app.Applications, vendorer vendorer, c *C) *app.Application {
 	const manifestBytes = `apiVersion: bundle.gravitational.io/v2
 kind: SystemApplication
 metadata:
@@ -899,4 +899,14 @@ spec:
 
 func registryAddr(addr string) string {
 	return fmt.Sprintf("http://%v", addr)
+}
+
+// vendorer is an interface for interacting with the vendoring helper.
+type vendorer interface {
+	// VendorDir takes information from an app vendor request, imports missing docker images if necessary,
+	// rewrites image names in the app's resources and returns a path to the directory containing ready
+	// to be imported app.
+	VendorDir(ctx context.Context, dir string, req service.VendorRequest) error
+	// VendorTarball is the same as VendorDir but accepts a tarball stream and unpacks it before vendoring
+	VendorTarball(ctx context.Context, tarball io.ReadCloser, req service.VendorRequest) (string, error)
 }
