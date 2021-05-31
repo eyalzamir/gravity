@@ -82,7 +82,7 @@ func NewAgentRunner(creds credentials.TransportCredentials) *agentRunner {
 		FieldLogger: logrus.WithField(trace.Component, "fsm:remote"),
 		agentCache: &agentCache{
 			creds:   creds,
-			clients: make(map[string]rpcclient.Client),
+			clients: make(map[string]rpcclient.Interface),
 		},
 	}
 }
@@ -185,7 +185,7 @@ func (r *agentCache) Close() error {
 }
 
 // GetClient returns a new agent client
-func (r *agentCache) GetClient(ctx context.Context, addr string) (clt rpcclient.Client, err error) {
+func (r *agentCache) GetClient(ctx context.Context, addr string) (clt rpcclient.Interface, err error) {
 	addr = rpc.AgentAddr(addr)
 	r.Lock()
 	clt = r.clients[addr]
@@ -209,7 +209,7 @@ func (r *agentCache) GetClient(ctx context.Context, addr string) (clt rpcclient.
 type agentCache struct {
 	creds credentials.TransportCredentials
 	sync.Mutex
-	clients map[string]rpcclient.Client
+	clients map[string]rpcclient.Interface
 }
 
 // RunCommand executes the provided command locally and returns its output
