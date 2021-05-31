@@ -371,8 +371,8 @@ func (h *WebHandler) completeHandler(w http.ResponseWriter, r *http.Request, p h
 	}
 
 	telehttplib.SetIndexHTMLHeaders(w.Header())
-	ctx := context.WithValue(context.TODO(), constants.WebSessionContext, s.ctx.GetWebSession())
-	ctx = context.WithValue(ctx, constants.OperatorContext, s.Operator)
+	ctx := ops.NewSessionContext(context.TODO(), s.ctx.GetWebSession())
+	ctx = ops.NewOperatorContext(ctx, s.Operator)
 
 	err = h.cfg.Forwarder.ForwardToService(w, r.WithContext(ctx), ForwardRequest{
 		ClusterName:      site.Domain,

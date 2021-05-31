@@ -625,7 +625,7 @@ func (m *Handler) GetHandlerContext(w http.ResponseWriter, r *http.Request) (*Au
 	}
 	return &AuthContext{
 		// Enrich request context with authenticated user information.
-		Context:        context.WithValue(r.Context(), constants.UserContext, user.GetName()),
+		Context:        ops.NewUserContext(r.Context(), user.GetName()),
 		User:           user,
 		Operator:       ops.OperatorWithACL(m.cfg.Operator, m.cfg.Identity, user, checker),
 		Applications:   app.ApplicationsWithACL(m.cfg.Applications, m.cfg.Identity, user, checker),
@@ -771,7 +771,7 @@ func (m *Handler) validateProvider(w http.ResponseWriter, r *http.Request, p htt
 		return nil, trace.Wrap(err)
 	}
 
-	result, err := m.cfg.Providers.Validate(&req, context.TODO())
+	result, err := m.cfg.Providers.Validate(context.TODO(), &req)
 	if err != nil {
 		if _, ok := trace.Unwrap(err).(awsservice.VerificationError); ok {
 			w.WriteHeader(http.StatusForbidden)
