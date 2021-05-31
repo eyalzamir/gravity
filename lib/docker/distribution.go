@@ -28,6 +28,8 @@ import (
 	registrycontext "github.com/docker/distribution/context"
 	"github.com/docker/distribution/registry/handlers"
 	"github.com/docker/distribution/registry/listener"
+
+	// imported for side-effects
 	_ "github.com/docker/distribution/registry/storage/driver/filesystem"
 	"github.com/docker/distribution/version"
 
@@ -56,7 +58,7 @@ func NewRegistry(config *configuration.Configuration) (*Registry, error) {
 	}, nil
 }
 
-// Starts starts the registry server and returns when the server
+// Start starts the registry server and returns when the server
 // has actually started listening.
 func (r *Registry) Start() error {
 	listener, err := listener.NewListener(r.config.HTTP.Net, r.config.HTTP.Addr)
