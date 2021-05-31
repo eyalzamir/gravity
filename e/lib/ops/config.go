@@ -25,7 +25,7 @@ import (
 	telecfg "github.com/gravitational/teleport/lib/config"
 	"github.com/gravitational/trace"
 	yaml2 "gopkg.in/yaml.v2"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -39,7 +39,7 @@ type SimpleGravityConfig struct {
 	Devmode bool                    `json:"devmode"`
 }
 
-// SimpleOpsService config is a simplified pack service config
+// SimplePackServiceConfig config is a simplified pack service config
 type SimplePackServiceConfig struct {
 	Enabled             bool   `json:"enabled"`
 	AdvertiseAddr       string `json:"advertise_addr"`
@@ -66,6 +66,7 @@ type SimpleTeleportConfig struct {
 }
 
 // OpsCenterConfigParams contain parameters for Ops Center config generation
+//nolint:revive // stable term, rename to HubConfigParams?
 type OpsCenterConfigParams struct {
 	// AdvertiseAddr is the Ops Center advertise addr
 	AdvertiseAddr string

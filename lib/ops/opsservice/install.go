@@ -486,7 +486,7 @@ func (s *site) validateInstall(op *ops.SiteOperation, req *ops.OperationUpdateRe
 func (s *site) checkOnPremServers(req ops.OperationUpdateRequest) error {
 	roleToCount := make(map[string]int)
 	for _, server := range req.Servers {
-		roleToCount[server.Role] += 1
+		roleToCount[server.Role]++
 	}
 
 	// verify that we have exactly the amount of servers of a certain role as dictated by flavor
@@ -745,9 +745,8 @@ func (s *site) waitForNodes(ctx *operationContext, installer ops.Operator) error
 			if len(report.Servers) == ctx.getNumServers() {
 				ctx.Infof("All agents joined, can continue: %v.", report)
 				return nil
-			} else {
-				ctx.Infof("Not all agents joined yet: %v.", report)
 			}
+			ctx.Infof("Not all agents joined yet: %v.", report)
 		case <-localCtx.Done():
 			return trace.LimitExceeded("timeout waiting for nodes")
 		}
